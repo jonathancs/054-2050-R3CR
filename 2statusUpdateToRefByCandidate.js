@@ -8,7 +8,7 @@ let numeroDaScreenshot = 1
 async function checkHistoric() {
 
 	// log current time console.log()
-	let browser = await puppeteer.launch({ headless: false })
+	let browser = await puppeteer.launch({ headless: false, defaultViewport: null, args: ['--start-maximized'] })
 	let page = await browser.newPage()
 
 

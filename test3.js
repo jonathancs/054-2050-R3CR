@@ -1,4 +1,4 @@
-const fs = require('fs').promises;
+const fs = require('fs').promises
 const puppeteer = require('puppeteer')
 
 
@@ -9,14 +9,58 @@ async function test3() {
     await page.setDefaultNavigationTimeout(0)
     await page.setViewport({ width: 1920, height: 1200, deviceScaleFactor: 1, }) // greater monitor
 
-    await page.goto('https://www.magazineluiza.com.br/', { waitUntil: 'networkidle0' })
+    await page.goto('https://easyupload.io/')
 
-    let url = await page.evaluate('document.querySelector("#__next > div:nth-child(2) > div > div.wrapper-main > div > div.wrapper-header > header > div > div:nth-child(1) > div > div > div.container-right-top-header > ul > li:nth-child(2) > a").href')
+    await page.waitForSelector('input[type=file]')
+    
+    const inputUploadHandle = await page.$('input[type=file]')
 
-    await page.goto(url)
+    let fileToUpload = './wp.jpg'
+
+    inputUploadHandle.uploadFile(fileToUpload)
+
+    await page.waitForSelector('#upload')
+    await page.evaluate(() => document.getElementById('#dropzone > div').click())
+
+    // wait for selector that contains the uploaded file URL
+    await page.waitForSelector('#upload-link')
+    await waitTwoSeconds()
+    await waitTwoSeconds()
+
+    // get the download URL
+    let downloadUrl = await page.evaluate(() => {
+        return document.getElementById('upload-link').value
+    })
+
+    // display the result on console
+    console.log({'file': fileToUpload,
+                 'download_url': downloadUrl})
+
+    // close the browser
+    // await browser.close()
 
 
+    
+	async function waitOneSecond() {
+
+		const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
+		const element = async () => {
+			await sleep(1000)
+
+		}
+
+		await element()
+
+	}
+
+	async function waitTwoSeconds() {
+		await waitOneSecond()
+		await waitOneSecond()
+	}
 }
 
 test3()
+
+
+
 
