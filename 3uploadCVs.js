@@ -2,11 +2,12 @@ const fs = require('fs').promises;
 const puppeteer = require('puppeteer')
 const credentials = require('./configs/credentials.json')
 const cookies = require('./configs/cookies.json')
-const candidates = require('./configs/candidates.js')
+const cvsFolder = 'C:/Users/Jonathan Casagrande/Downloads/cvs/toBeUploaded'
+const candidates = require('./configs/1checkHistoricConfigs.js')
+
 let numeroDaScreenshot = 1
 
-let positionNumber = '990'
-let jobFit = 'android'
+
 
 async function checkHistoric() {
 
@@ -54,7 +55,7 @@ async function checkHistoric() {
 
 	async function loginWithCookies() {
 
-		const cookiesString = await fs.readFile('.configs/cookies.json');
+		const cookiesString = await fs.readFile('./configs/cookies.json');
 		const cookies = JSON.parse(cookiesString);
 		await page.setCookie(...cookies);
 		await page.goto(`https://recruit.zoho.com/recruit/org4314466/ImportParser.do?module=Candidates&type=importfromdocument`, { waitUntil: 'networkidle0' })
@@ -86,16 +87,15 @@ async function checkHistoric() {
 		await page.click('#nextbtn')
 
 		// 5 Wait For Navigation To Finish
-		await page.waitForNavigation({ waitUntil: 'networkidle0' })
+		await page.waitForNavigation({ waitUntil: 'networkidle2' })
 
 	}
 
 	async function storeCookies() {
 
 		await console.log(page.cookies())
-		await console.log(page.cookies)
-		const cookies = await page.cookies();
-		await fs.writeFile('.configs/cookies.json', JSON.stringify(cookies, null, 2));
+		const cookies = await page.cookies()
+		await fs.writeFile('./configs/cookies.json', JSON.stringify(cookies, null, 2))
 
 	}
 
@@ -124,22 +124,11 @@ async function checkHistoric() {
 
 	async function uploadCV() {
 
-		const cvsFolder = 'C:/Users/Jonathan Casagrande/Downloads/cvs/toBeUploaded'
-		
-
-		fs.readdirSync(cvsFolder).forEach(file => {
-		})
-
-		for (let i = 0; i < array.length; i++) {
-			const element = array[i];
-
-		}
-
 		await page.waitForSelector('input[type=file]', { timeout: 0 })
 
 		const inputUploadHandle = await page.$('input[type=file]', { timeout: 0 })
 
-		let fileToUpload = 'C:/Users/Jonathan Casagrande/Downloads/angular.pdf'
+		let fileToUpload = 'C:/Users/Jonathan Casagrande/Downloads/cvs/angular.pdf'
 
 		await inputUploadHandle.uploadFile(fileToUpload)
 
@@ -171,13 +160,15 @@ async function checkHistoric() {
 
 		await page.waitForSelector('#Crm_Leads_FIRSTNAME_label', { timeout: 0 })
 
-		await page.screenshot({ path: './prints/verifyName' + `${numeroDaScreenshot}.png` }, { delay: 2000 })
-		await numeroDaScreenshot++
-
 		await page.select('select#Crm_Leads_LEADSOURCE', 'LinkedIn')
 
 		await page.select('select#Crm_Leads_LEADCF13', 'BRL')
 		await page.click('#Crm_Leads_COUNTRY')
+		await page.keyboard.press('Backspace')
+		await page.keyboard.press('Backspace')
+		await page.keyboard.press('Backspace')
+		await page.keyboard.press('Backspace')
+		await page.keyboard.press('Backspace')
 		await page.keyboard.press('Backspace')
 
 		await page.type('#Crm_Leads_COUNTRY', 'Brazil')
@@ -196,64 +187,20 @@ async function checkHistoric() {
 		await page.select('select#Crm_Leads_STATUS', 'sent email')
 
 		await page.click('#saveLeadsBtn')
-	}
 
-	async function lookCandidates() {
-		for (let i = 0; i < candidates.length; i++) {
-			let loopedName = candidates[i]
+		await waitThreeSeconds()
+		await waitThreeSeconds()
 
-			await page.waitForSelector("#qIconDiv > table > tbody > tr > td:nth-child(2)")
-			await page.click("#qIconDiv > table > tbody > tr > td:nth-child(2)")
+		let temporaryScreenshotElement = await page.$('#dv_title')
 
-			await page.type('#gsearchTextBox', loopedName, { delay: 30 })
+		await temporaryScreenshotElement.screenshot({ path: `./prints/${numeroDaScreenshot}.png` }, { delay: 2000 })
+		await numeroDaScreenshot++
 
-			await waitThreeSeconds()
+		let currentURL = page.url()
 
-			await page.screenshot({ path: `./prints/${numeroDaScreenshot}.png` }, { delay: 4000 })
-			await numeroDaScreenshot++
+		await fs.appendFile('./results/linkstoCheck', (numeroDaScreenshot-1) + '\n')
+		await fs.appendFile('./results/linkstoCheck', currentURL + '\n\n')
 
-			await ifHasHistoric()
-
-			await page.waitForSelector('#closenewsearchbar')
-			await page.click('#closenewsearchbar')
-
-		}
-
-
-	}
-
-	async function ifHasHistoric() {
-
-		//	let matchedName = await page.evaluate('função no document' "elemento")
-
-		let matchedName = await page.evaluate('document.querySelector("#search_Leads").children[0].children[1].children[0].children[0].innerText')
-
-		let candidatePageLink = await page.evaluate('document.querySelector("#search_Leads").children[0].children[2].href')
-
-		if (matchedName) {
-			// faced a javascript-code-structure problem
-			// i can't refer LOOPEDNAME from the previous FOR loop.
-
-			await page.goto(candidatePageLink, { waitUntil: 'networkidle0' })
-
-			await page.screenshot({ path: `./prints/${numeroDaScreenshot}.png` }, { delay: 4000 })
-			await numeroDaScreenshot++
-
-			await page.click('#newleft_Notes')
-
-			await page.screenshot({ path: `./prints/${numeroDaScreenshot}.png` }, { delay: 4000 })
-			await numeroDaScreenshot++
-
-			await page.click('#newleft_Activities')
-
-			await waitThreeSeconds()
-
-			await page.screenshot({ path: `./prints/${numeroDaScreenshot}.png` }, { delay: 4000 })
-			await numeroDaScreenshot++
-
-			await page.goto(`https://recruit.zoho.com/recruit/org4314466/ShowTab.do?module=Candidates`, { waitUntil: 'networkidle0' })
-
-		}
 	}
 
 }

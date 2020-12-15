@@ -1,8 +1,8 @@
 const fs = require('fs').promises;
 const puppeteer = require('puppeteer')
-const credentials = require('./2statusUpdateToRefByCandidateConfig/credentials.json')
-const cookies = require('./2statusUpdateToRefByCandidateConfig/cookies.json')
-const refByCandidateList = require('./2statusUpdateToRefByCandidateConfig/refByCandidateList.js')
+const credentials = require('./configs/credentials.json')
+const cookies = require('./configs/cookies.json')
+const refByCandidateList = require('./configs/2statusUpdateToRefByCandidateConfigs.js')
 let numeroDaScreenshot = 1
 
 async function checkHistoric() {
