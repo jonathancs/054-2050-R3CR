@@ -125,8 +125,6 @@ async function checkHistoric() {
 
 	async function ifHasHistoric() {
 
-		//	let matchedName = await page.evaluate('função no document' "elemento")
-
 		let matchedName = await page.evaluate('document.querySelector("#search_Leads").children[0].children[1].children[0].children[0].innerText')
 
 		let candidatePageLink = await page.evaluate('document.querySelector("#search_Leads").children[0].children[2].href')
