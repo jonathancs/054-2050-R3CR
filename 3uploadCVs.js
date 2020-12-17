@@ -6,7 +6,9 @@ const cvsFolder = 'C:/Users/Jonathan Casagrande/Downloads/cvs/toBeUploaded'
 const candidates = require('./configs/1checkHistoricConfigs.js')
 
 let numeroDaScreenshot = 1
-
+let positionNumber = '1031'
+let jobFit = 'front-end dev'
+let fileToUpload = 'C:/Users/Jonathan Casagrande/Downloads/cvs/angular.pdf'
 
 
 async function checkHistoric() {
@@ -128,7 +130,6 @@ async function checkHistoric() {
 
 		const inputUploadHandle = await page.$('input[type=file]', { timeout: 0 })
 
-		let fileToUpload = 'C:/Users/Jonathan Casagrande/Downloads/cvs/angular.pdf'
 
 		await inputUploadHandle.uploadFile(fileToUpload)
 
