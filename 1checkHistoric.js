@@ -1,11 +1,10 @@
 const fs = require('fs').promises;
 const puppeteer = require('puppeteer')
-const credentials = require('./1checkHistoricConfig/credentials.json')
-const cookies = require('./1checkHistoricConfig/cookies.json')
-const candidates = require('./1checkHistoricConfig/candidates.js')
+const credentials = require('./configs/credentials.json')
+const cookies = require('./configs/cookies.json')
+const candidates = require('./configs/1checkHistoricConfigs.js')
 
 let numeroDaScreenshot = 1
-
 
 async function checkHistoric() {
 
@@ -54,7 +53,7 @@ async function checkHistoric() {
 
 	async function loginWithCookies() {
 
-		const cookiesString = await fs.readFile('./1checkHistoricConfig/cookies.json');
+		const cookiesString = await fs.readFile('./configs/cookies.json');
 		const cookies = JSON.parse(cookiesString);
 		await page.setCookie(...cookies);
 		await page.goto(`https://recruit.zoho.com/recruit/org4314466/ShowTab.do?module=Candidates`, { waitUntil: 'networkidle0' })
@@ -95,13 +94,15 @@ async function checkHistoric() {
 		await console.log(page.cookies())
 		await console.log(page.cookies)
 		const cookies = await page.cookies();
-		await fs.writeFile('./1checkHistoricConfig/cookies.json', JSON.stringify(cookies, null, 2));
+		await fs.writeFile('./configs/cookies.json', JSON.stringify(cookies, null, 2));
 
 	}
 	
 	async function lookCandidates() {
 		for (let i = 0; i < candidates.length; i++) {
 			let loopedName = candidates[i]
+
+			await page.goto('https://recruit.zoho.com/recruit/org4314466/ShowTab.do?module=Candidates', {waitUntil : 'networkidle2' }).catch(e => void 0)
 
 			await page.waitForSelector("#qIconDiv > table > tbody > tr > td:nth-child(2)")
 			await page.click("#qIconDiv > table > tbody > tr > td:nth-child(2)")
@@ -113,10 +114,10 @@ async function checkHistoric() {
 			await page.screenshot({ path: `./prints/${numeroDaScreenshot}.png` }, { delay: 4000 })
 			await numeroDaScreenshot++
 			
-			await ifHasHistoric()
+			// await ifHasHistoric()
 
-			await page.waitForSelector('#closenewsearchbar')
-			await page.click('#closenewsearchbar')
+			// await page.waitForSelector('#closenewsearchbar')
+			// await page.click('#closenewsearchbar')
 
 		}
 

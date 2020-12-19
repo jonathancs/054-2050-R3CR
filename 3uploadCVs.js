@@ -6,9 +6,9 @@ const cvsFolder = 'C:/Users/Jonathan Casagrande/Downloads/cvs/toBeUploaded'
 const candidates = require('./configs/1checkHistoricConfigs.js')
 
 let numeroDaScreenshot = 1
-let positionNumber = '1031'
-let jobFit = 'front-end dev'
-let fileToUpload = 'C:/Users/Jonathan Casagrande/Downloads/cvs/angular.pdf'
+let positionNumber = '1029'
+let jobFit = 'project manager'
+let fileToUpload = 'C:/Users/Jonathan Casagrande/Downloads/cvs/profile (1).pdf'
 
 
 async function checkHistoric() {
@@ -25,6 +25,8 @@ async function checkHistoric() {
 	await login()
 
 	await uploadCV()
+
+	await browser.close()
 
 
 
@@ -45,8 +47,8 @@ async function checkHistoric() {
 		await page.setDefaultNavigationTimeout(0)
 		const context = browser.defaultBrowserContext()
 		context.overridePermissions("https://recruit.zoho.com/recruit/org4314466/ImportParser.do?module=Candidates&type=importfromdocument", ["geolocation", "notifications"]) // An array of permissions
-		await page.setViewport({ width: 1920, height: 1070, deviceScaleFactor: 1, }) // greater monitor
-		// await page.setViewport({ width: 1270, height: 768, deviceScaleFactor: 1, }); // notebook screen
+		// await page.setViewport({ width: 1920, height: 1070, deviceScaleFactor: 1, }) // greater monitor
+		await page.setViewport({ width: 1270, height: 600, deviceScaleFactor: 1, }); // notebook screen
 	}
 
 	async function login() {
@@ -183,12 +185,14 @@ async function checkHistoric() {
 		await waitTwoSeconds()
 		await page.type('select#Crm_Leads_LEADCF7', `${jobFit}`)
 		await page.click('#Crm_Leads_LEADCF81')
+		await waitThreeSeconds()
 		await page.click('#calHeader > tbody > tr:nth-child(3) > td.sel') // change the element weekly?
 		await page.select('select#Crm_Leads_LEADCF1', 'MD')
 		await page.select('select#Crm_Leads_STATUS', 'sent email')
 
 		await page.click('#saveLeadsBtn')
 
+		await waitThreeSeconds()
 		await waitThreeSeconds()
 		await waitThreeSeconds()
 

@@ -21,7 +21,7 @@ async function checkHistoric() {
 
 	await updateStatusToRefByCandidate()
 
-	// await browser.close()
+	await browser.close()
 
 
 	/*  End of the calls  */
@@ -56,7 +56,7 @@ async function checkHistoric() {
 
 	async function loginWithCookies() {
 
-		const cookiesString = await fs.readFile('./2statusUpdateToRefByCandidateConfig/cookies.json');
+		const cookiesString = await fs.readFile('./configs/cookies.json');
 		const cookies = JSON.parse(cookiesString);
 		await page.setCookie(...cookies);
 		await page.goto(`https://recruit.zoho.com/recruit/org4314466/ShowTab.do?module=Candidates`, { waitUntil: 'networkidle0', timeout: 0 })
@@ -100,7 +100,7 @@ async function checkHistoric() {
 		await console.log(page.cookies())
 		await console.log(page.cookies)
 		const cookies = await page.cookies();
-		await fs.writeFile('./2statusUpdateToRefByCandidateConfig/cookies.json', JSON.stringify(cookies, null, 2));
+		await fs.writeFile('./configs/cookies.json', JSON.stringify(cookies, null, 2));
 
 	}
 
