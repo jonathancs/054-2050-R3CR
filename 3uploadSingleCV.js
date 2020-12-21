@@ -2,15 +2,14 @@ const fs = require('fs').promises;
 const puppeteer = require('puppeteer')
 const credentials = require('./configs/credentials.json')
 const cookies = require('./configs/cookies.json')
-const cvsFolder = 'C:/Users/Jonathan Casagrande/Downloads/cvs/toBeUploaded'
-const candidates = require('./configs/candidates.js')
+const numeroDaScreenshot = 1
 
-let numeroDaScreenshot = 1
+const positionNumber = '1029'
+const jobFit = 'project manager'
+const fileToUpload = 'C:/Users/Jonathan Casagrande/Downloads/cvs/profile (1).pdf'
 
-let positionNumber = '990'
-let cvType = 'angular'
 
-async function checkHistoric() {
+async function uploadCV() {
 
 	// launch application
 	let browser = await puppeteer.launch({ headless: false, defaultViewport: null, args: ['--start-maximized'] })
@@ -22,6 +21,12 @@ async function checkHistoric() {
 	await standardConfigurations()
 
 	await login()
+
+	await uploadCV()
+
+	await browser.close()
+
+
 
 	/*   End of the calls   */
 
@@ -40,8 +45,8 @@ async function checkHistoric() {
 		await page.setDefaultNavigationTimeout(0)
 		const context = browser.defaultBrowserContext()
 		context.overridePermissions("https://recruit.zoho.com/recruit/org4314466/ImportParser.do?module=Candidates&type=importfromdocument", ["geolocation", "notifications"]) // An array of permissions
-		await page.setViewport({ width: 1920, height: 1070, deviceScaleFactor: 1, }) // greater monitor
-		// await page.setViewport({ width: 1270, height: 768, deviceScaleFactor: 1, }); // notebook screen
+		// await page.setViewport({ width: 1920, height: 1070, deviceScaleFactor: 1, }) // greater monitor
+		await page.setViewport({ width: 1270, height: 600, deviceScaleFactor: 1, }); // notebook screen
 	}
 
 	async function login() {
@@ -52,7 +57,7 @@ async function checkHistoric() {
 
 	async function loginWithCookies() {
 
-		const cookiesString = await fs.readFile('.configs/cookies.json');
+		const cookiesString = await fs.readFile('./configs/cookies.json');
 		const cookies = JSON.parse(cookiesString);
 		await page.setCookie(...cookies);
 		await page.goto(`https://recruit.zoho.com/recruit/org4314466/ImportParser.do?module=Candidates&type=importfromdocument`, { waitUntil: 'networkidle0' })
@@ -84,7 +89,7 @@ async function checkHistoric() {
 		await page.click('#nextbtn')
 
 		// 5 Wait For Navigation To Finish
-		await page.waitForNavigation({ waitUntil: 'networkidle0' })
+		await page.waitForNavigation({ waitUntil: 'networkidle2' })
 
 	}
 
@@ -119,24 +124,12 @@ async function checkHistoric() {
 		await waitOneSecond()
 	}
 
-	
-
 	async function uploadCV() {
-
-		fs.readdirSync(cvsFolder).forEach(file => {
-			if (file.match(cvType)) {console.log(file)}
-		})
-
-		for (let i = 0; i < array.length; i++) {
-			const element = array[i];
-
-		}
 
 		await page.waitForSelector('input[type=file]', { timeout: 0 })
 
 		const inputUploadHandle = await page.$('input[type=file]', { timeout: 0 })
 
-		let fileToUpload = 'C:/Users/Jonathan Casagrande/Downloads/angular.pdf'
 
 		await inputUploadHandle.uploadFile(fileToUpload)
 
@@ -168,13 +161,15 @@ async function checkHistoric() {
 
 		await page.waitForSelector('#Crm_Leads_FIRSTNAME_label', { timeout: 0 })
 
-		await page.screenshot({ path: './prints/verifyName' + `${numeroDaScreenshot}.png` }, { delay: 2000 })
-		await numeroDaScreenshot++
-
 		await page.select('select#Crm_Leads_LEADSOURCE', 'LinkedIn')
 
 		await page.select('select#Crm_Leads_LEADCF13', 'BRL')
 		await page.click('#Crm_Leads_COUNTRY')
+		await page.keyboard.press('Backspace')
+		await page.keyboard.press('Backspace')
+		await page.keyboard.press('Backspace')
+		await page.keyboard.press('Backspace')
+		await page.keyboard.press('Backspace')
 		await page.keyboard.press('Backspace')
 
 		await page.type('#Crm_Leads_COUNTRY', 'Brazil')
@@ -188,16 +183,29 @@ async function checkHistoric() {
 		await waitTwoSeconds()
 		await page.type('select#Crm_Leads_LEADCF7', `${jobFit}`)
 		await page.click('#Crm_Leads_LEADCF81')
+		await waitThreeSeconds()
 		await page.click('#calHeader > tbody > tr:nth-child(3) > td.sel') // change the element weekly?
 		await page.select('select#Crm_Leads_LEADCF1', 'MD')
 		await page.select('select#Crm_Leads_STATUS', 'sent email')
 
-		await page.screenshot(`./prints/${numeroDaScreenshot}`, '#secContent_Basic_Info > div.contInfoTab.floatL.singleColLayout.Leads', { delay: 2000 })
+		await page.click('#saveLeadsBtn')
+
+		await waitThreeSeconds()
+		await waitThreeSeconds()
+		await waitThreeSeconds()
+
+		let temporaryScreenshotElement = await page.$('#dv_title')
+
+		await temporaryScreenshotElement.screenshot({ path: `./prints/${numeroDaScreenshot}.png` }, { delay: 2000 })
 		await numeroDaScreenshot++
 
-		// await page.click('#saveLeadsBtn')
+		let currentURL = page.url()
+
+		await fs.appendFile('./results/linkstoCheck', (numeroDaScreenshot-1) + '\n')
+		await fs.appendFile('./results/linkstoCheck', currentURL + '\n\n')
+
 	}
 
 }
 
-checkHistoric()
+uploadCV()
