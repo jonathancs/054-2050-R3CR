@@ -1,8 +1,4 @@
-let CVS_to_upload = [
-    'D:/git/054-2050-R3CR/temporaryFiles/EN .net (35).pdf',
-    'D:/git/054-2050-R3CR/temporaryFiles/EN .net (36).pdf',
-    'D:/git/054-2050-R3CR/temporaryFiles/EN .net (37).pdf',
-    'D:/git/054-2050-R3CR/temporaryFiles/EN .net (38).pdf',
+let listOfCVsToUpload = [
     'D:/git/054-2050-R3CR/temporaryFiles/EN .net (39).pdf',
     'D:/git/054-2050-R3CR/temporaryFiles/EN .net (40).pdf',
     'D:/git/054-2050-R3CR/temporaryFiles/EN .net (41).pdf',
@@ -11,4 +7,4 @@ let CVS_to_upload = [
 
 ]
 
-module.exports = CVS_to_upload
+module.exports = listOfCVsToUpload

@@ -2,12 +2,20 @@ const fs = require('fs').promises;
 const puppeteer = require('puppeteer')
 const credentials = require('./configs/credentials.json')
 const cookies = require('./configs/cookies.json')
-const cvsFolder = 'C:/Users/Jonathan Casagrande/Downloads/cvs/toBeUploaded'
-const CVs_to_upload = require('./configs/3CVs_to_upload.js')
+const listOfCVsToUpload = require('./configs/3CVsToUpload.js')
+const uploadPage = 'https://recruit.zoho.com/recruit/org4314466/ImportParser.do?module=Candidates&type=importfromdocument'
 
 let numeroDaScreenshot = 1
 let positionNumber = '979'
 let jobFit = 'back-end dev'
+
+/* 
+
+	TRY push upload button at the en (capture of no name is detected)
+
+	then wait undefinitely until some element of the next screen appears
+
+*/
 
 /* 
 	back-end dev
@@ -26,7 +34,7 @@ async function uploadCVs() {
 
 	let browser = await puppeteer.launch({ headless: false, defaultViewport: null, args: ['--start-maximized'] })
 	let page = await browser.newPage()
-	await page.setViewport({ width: 1920, height: 1070, deviceScaleFactor: 1, }) // greater monitor
+	await page.setViewport({ width: 1920, height: 950, deviceScaleFactor: 1, }) // greater monitor
 	// await page.setViewport({ width: 1270, height: 600, deviceScaleFactor: 1, }); // notebook screen
 
 
@@ -34,7 +42,8 @@ async function uploadCVs() {
 	/*    function-calls to be done    */
 	await standardConfigurations()
 
-	await login()
+	await loginWithCookies()
+
 	/* 
 	
 		separate the login option.
@@ -47,7 +56,7 @@ async function uploadCVs() {
 
 	await CVs_upload()
 
-	await browser.close()
+	// await browser.close()
 	/*   End of the calls   */
 
 	/*   below is the base script   */
@@ -60,13 +69,11 @@ async function uploadCVs() {
 
 	async function CVs_upload() {
 
-		for (let i = 0; i < CVs_to_upload; i++) {
+		for (let i = 0; i < listOfCVsToUpload.length; i++) {
 
-			let loopedCV = CVs_to_upload[i]
+			let loopedCV = listOfCVsToUpload[i]
 
-			await console.log(loopedCV)
-
-			await page.goto(`https://recruit.zoho.com/recruit/org4314466/ImportParser.do?module=Candidates&type=importfromdocument`, { waitUntil: 'networkidle2' }).catch(e => void 0);
+			if (await page.url() != uploadPage) {await page.goto(uploadPage, { waitUntil: 'networkidle0' }).catch(e => void 0)}
 
 			/* 
 				//backend
@@ -148,7 +155,7 @@ async function uploadCVs() {
 			await page.type('select#Crm_Leads_LEADCF7', `${jobFit}`)
 			await page.click('#Crm_Leads_LEADCF81')
 			await waitThreeSeconds()
-			await page.click('#calHeader > tbody > tr:nth-child(3) > td.sel') // change the element weekly?
+			await page.evaluate('document.querySelector("#calHeader > tbody > tr:nth-child(4) > td.sel").click()') // change the NTH-CHILD weekly
 			await page.select('select#Crm_Leads_LEADCF1', 'MD')
 			await page.select('select#Crm_Leads_STATUS', 'sent email')
 
@@ -176,11 +183,13 @@ async function uploadCVs() {
 
 		await page.setDefaultNavigationTimeout(0)
 		const context = browser.defaultBrowserContext()
-		context.overridePermissions("https://recruit.zoho.com/recruit/org4314466/ImportParser.do?module=Candidates&type=importfromdocument", ["geolocation", "notifications"]) // An array of permissions
+		context.overridePermissions(uploadPage, ["geolocation", "notifications"]) // An array of permissions
 
 	}
 
-	async function login() {
+	async function login_with_or_without_cookies() {
+
+		try {} catch (error) {console.log('\n' + error) }
 
 		if (Object.keys(cookies).length) { loginWithCookies() } else { loginWithoutCookies() }
 
@@ -191,13 +200,13 @@ async function uploadCVs() {
 		const cookiesString = await fs.readFile('./configs/cookies.json');
 		const cookies = JSON.parse(cookiesString);
 		await page.setCookie(...cookies);
-		await page.goto(`https://recruit.zoho.com/recruit/org4314466/ImportParser.do?module=Candidates&type=importfromdocument`, { waitUntil: 'networkidle2' })
+		await page.goto(uploadPage, { waitUntil: 'networkidle0' })
 
 	}
 
 	async function loginWithoutCookies() {
 
-		await page.goto('https://recruit.zoho.com/recruit/org4314466/ImportParser.do?module=Candidates&type=importfromdocument', { waitUntil: 'networkidle2' })
+		await page.goto('https://recruit.zoho.com/recruit/org4314466/ImportParser.do?module=Candidates&type=importfromdocument', { waitUntil: 'networkidle0' })
 
 		await insertCredentials()
 
@@ -220,7 +229,7 @@ async function uploadCVs() {
 		await page.click('#nextbtn')
 
 		// 5 Wait For Navigation To Finish
-		await page.waitForNavigation({ waitUntil: 'networkidle2' })
+		await page.waitForNavigation({ waitUntil: 'networkidle0' })
 
 	}
 
