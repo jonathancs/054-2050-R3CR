@@ -35,6 +35,15 @@ async function uploadCVs() {
 	await standardConfigurations()
 
 	await login()
+	/* 
+	
+		separate the login option.
+		have the mainstream option of with_cookies & without_cookies
+			AND
+		also the option of logging in automatically, without cookies, 
+		let's see how it behaves.
+
+	*/
 
 	await CVs_upload()
 
