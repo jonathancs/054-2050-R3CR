@@ -1,4 +1,25 @@
 let candidates = [
+'Jardeson de Araújo Arlindo',
+'Luciano Meneses',
+'Arthur Landim',
+'Igor Silva',
+'Dimas Victor',
+'Lucas Fernandes',
+'Anderson Perondi',
+'Elizabeth Lucas',
+'Isabely Costa',
+'Leonarde Firmino',
+'Samuel Duarte',
+'Rodrigo Melo',
+'Diego Brito',
+'Gustavo David de Oliveira Souza',
+'Caio Nogueira',
+'Gabriel Costa',
+'Gisele Nunes',
+'Enzo Furlan',
+'Nícolas Fonseca',
+'Gustavo Mendes',
+'Vitor Moura'
     
 ]
 

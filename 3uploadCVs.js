@@ -2,11 +2,12 @@ const fs = require('fs').promises;
 const puppeteer = require('puppeteer')
 const credentials = require('./configs/credentials.json')
 const cookies = require('./configs/cookies.json')
-const cvsFolder = 'C:/Users/Jonathan Casagrande/Downloads/cvs/'
+const cvsFolder = 'C:/Users/Jonathan Casagrande/Downloads/cvs/toBeUploaded'
+const CVs_to_upload = require('./configs/3CVs_to_upload.js')
 
 let numeroDaScreenshot = 1
-let positionNumber = '1029'
-let jobFit = ''
+let positionNumber = '979'
+let jobFit = 'back-end dev'
 
 /* 
 	back-end dev
@@ -21,27 +22,23 @@ let jobFit = ''
 */
 
 
-async function checkHistoric() {
+async function uploadCVs() {
 
-	// launch application
 	let browser = await puppeteer.launch({ headless: false, defaultViewport: null, args: ['--start-maximized'] })
 	let page = await browser.newPage()
-	// await page.setViewport({ width: 1920, height: 1070, deviceScaleFactor: 1, }) // greater monitor
-	await page.setViewport({ width: 1270, height: 600, deviceScaleFactor: 1, }); // notebook screen
+	await page.setViewport({ width: 1920, height: 1070, deviceScaleFactor: 1, }) // greater monitor
+	// await page.setViewport({ width: 1270, height: 600, deviceScaleFactor: 1, }); // notebook screen
 
 
+	
 	/*    function-calls to be done    */
-
 	await standardConfigurations()
 
 	await login()
 
-	await uploadCV()
+	await CVs_upload()
 
 	await browser.close()
-
-
-
 	/*   End of the calls   */
 
 	/*   below is the base script   */
@@ -52,7 +49,119 @@ async function checkHistoric() {
 
 
 
+	async function CVs_upload() {
 
+		for (let i = 0; i < CVs_to_upload; i++) {
+
+			let loopedCV = CVs_to_upload[i]
+
+			await console.log(loopedCV)
+
+			await page.goto(`https://recruit.zoho.com/recruit/org4314466/ImportParser.do?module=Candidates&type=importfromdocument`, { waitUntil: 'networkidle2' }).catch(e => void 0);
+
+			/* 
+				//backend
+				if (loopedCV.match('dot net')) {let jobFit = 'back-end dev'}
+				if (loopedCV.match('python')) {let jobFit = 'back-end dev'}
+				if (loopedCV.match('java')) {let jobFit = 'back-end dev'}
+				
+				// QA
+				if (loopedCV.match('qa')) {let jobFit = 'QA'}
+				if (loopedCV.match('qa aut')) {let jobFit = 'QA automation'}
+				
+				// front
+				if (loopedCV.match('fe')) {let jobFit = 'front-end dev'}
+				if (loopedCV.match('angular')) {let jobFit = 'front-end dev'}
+				if (loopedCV.match('react')) {let jobFit = 'front-end dev'}
+				
+				// leading
+				if (loopedCV.match('pm')) {let jobFit = 'project manager'}
+				if (loopedCV.match('ba')) {let jobFit = 'business analyst'}
+	
+			*/
+
+			let fileToUpload = loopedCV
+
+			await page.waitForSelector('input[type=file]', { timeout: 0 })
+
+			const inputUploadHandle = await page.$('input[type=file]', { timeout: 0 })
+
+			await inputUploadHandle.uploadFile(fileToUpload)
+
+			await waitThreeSeconds()
+			await waitThreeSeconds()
+
+			await page.waitForSelector('#importsecondaryItem > p.newSubTitle.pT35.pB0.ns-advanced > a', { timeout: 0 })
+			await page.click('#importsecondaryItem > p.newSubTitle.pT35.pB0.ns-advanced > a')
+
+			await waitTwoSeconds()
+
+			await page.click('#Crm_Import_Leads_POTENTIALID')
+
+			await waitOneSecond()
+
+			await page.waitForSelector('#entityLookupdiv > form > div.cvpadding.bB0 > table > tbody > tr > td:nth-child(2) > div > input', positionNumber)
+			await page.type('#entityLookupdiv > form > div.cvpadding.bB0 > table > tbody > tr > td:nth-child(2) > div > input', positionNumber)
+
+			await page.keyboard.press("Enter")
+
+			await waitThreeSeconds()
+
+			await page.waitForSelector('#entityLookupdiv > form > div.w100p > table > tbody > tr:nth-child(2) > td > div > div.popup-model-content.pB20 > table > tbody > tr:nth-child(1) > td > table > tbody > tr:nth-child(2) > td:nth-child(1) > label > span', { timeout: 0 })
+			await page.click('#entityLookupdiv > form > div.w100p > table > tbody > tr:nth-child(2) > td > div > div.popup-model-content.pB20 > table > tbody > tr:nth-child(1) > td > table > tbody > tr:nth-child(2) > td:nth-child(1) > label > span')
+
+			await waitOneSecond()
+
+			await page.click('#resume_parser_import_id')
+
+			await page.waitForSelector('#Crm_Leads_FIRSTNAME_label', { timeout: 0 })
+
+			await page.select('select#Crm_Leads_LEADSOURCE', 'LinkedIn')
+
+			await page.select('select#Crm_Leads_LEADCF13', 'BRL')
+			await page.click('#Crm_Leads_COUNTRY')
+			await page.keyboard.press('Backspace')
+			await page.keyboard.press('Backspace')
+			await page.keyboard.press('Backspace')
+			await page.keyboard.press('Backspace')
+			await page.keyboard.press('Backspace')
+			await page.keyboard.press('Backspace')
+
+			await page.type('#Crm_Leads_COUNTRY', 'Brazil')
+
+			await page.keyboard.press("Tab")
+			await page.keyboard.press("Enter")
+			await waitTwoSeconds()
+			await page.type('select#Crm_Leads_LEADCF6', `${jobFit}`)
+			await page.keyboard.press("Tab")
+			await page.keyboard.press("Enter")
+			await waitTwoSeconds()
+			await page.type('select#Crm_Leads_LEADCF7', `${jobFit}`)
+			await page.click('#Crm_Leads_LEADCF81')
+			await waitThreeSeconds()
+			await page.click('#calHeader > tbody > tr:nth-child(3) > td.sel') // change the element weekly?
+			await page.select('select#Crm_Leads_LEADCF1', 'MD')
+			await page.select('select#Crm_Leads_STATUS', 'sent email')
+
+			await page.click('#saveLeadsBtn')
+
+			await waitThreeSeconds()
+			await waitThreeSeconds()
+			await waitThreeSeconds()
+
+			let temporaryScreenshotElement = await page.$('#dv_title')
+
+			await temporaryScreenshotElement.screenshot({ path: `./prints/${numeroDaScreenshot}.png` }, { delay: 2000 })
+			await numeroDaScreenshot++
+
+			let currentURL = page.url()
+
+			await fs.appendFile('./results/linkstoCheck', (numeroDaScreenshot - 1) + '\n')
+			await fs.appendFile('./results/linkstoCheck', currentURL + '\n\n')
+
+		}
+
+	}
 
 	async function standardConfigurations() {
 
@@ -137,123 +246,6 @@ async function checkHistoric() {
 		await waitOneSecond()
 	}
 
-	async function uploadCV() {
-
-		let cvsArray = []
-
-		await fs.readdirSync(cvsFolder).forEach(file => {
-
-			cvsArray.push(file)
-
-		})
-
-		for (let i = 0; i < cvsArray.length; i++) {
-			const loopedCV = cvsArray[i]
-
-			await page.goto(`https://recruit.zoho.com/recruit/org4314466/ImportParser.do?module=Candidates&type=importfromdocument`, { waitUntil: 'networkidle2' })
-			
-
-			// //backend
-			// if (loopedCV.match('dot net')) {let jobFit = 'back-end dev'}
-			// if (loopedCV.match('python')) {let jobFit = 'back-end dev'}
-			// if (loopedCV.match('java')) {let jobFit = 'back-end dev'}
-			
-			// // QA
-			// if (loopedCV.match('qa')) {let jobFit = 'QA'}
-			// if (loopedCV.match('qa aut')) {let jobFit = 'QA automation'}
-			
-			// // front
-			// if (loopedCV.match('fe')) {let jobFit = 'front-end dev'}
-			// if (loopedCV.match('angular')) {let jobFit = 'front-end dev'}
-			// if (loopedCV.match('react')) {let jobFit = 'front-end dev'}
-			
-			// // leading
-			// if (loopedCV.match('pm')) {let jobFit = 'project manager'}
-			// if (loopedCV.match('ba')) {let jobFit = 'business analyst'}
-
-			let fileToUpload = `C:/Users/Jonathan Casagrande/Downloads/cvs/${loopedCV}`
-
-			await page.waitForSelector('input[type=file]', { timeout: 0 })
-
-			const inputUploadHandle = await page.$('input[type=file]', { timeout: 0 })
-
-			await inputUploadHandle.uploadFile(fileToUpload)
-
-			await waitThreeSeconds()
-			await waitThreeSeconds()
-
-			await page.waitForSelector('#importsecondaryItem > p.newSubTitle.pT35.pB0.ns-advanced > a', { timeout: 0 })
-			await page.click('#importsecondaryItem > p.newSubTitle.pT35.pB0.ns-advanced > a')
-
-			await waitTwoSeconds()
-
-			await page.click('#Crm_Import_Leads_POTENTIALID')
-
-			await waitOneSecond()
-
-			await page.waitForSelector('#entityLookupdiv > form > div.cvpadding.bB0 > table > tbody > tr > td:nth-child(2) > div > input', positionNumber)
-			await page.type('#entityLookupdiv > form > div.cvpadding.bB0 > table > tbody > tr > td:nth-child(2) > div > input', positionNumber)
-
-			await page.keyboard.press("Enter")
-
-			await waitThreeSeconds()
-
-			await page.waitForSelector('#entityLookupdiv > form > div.w100p > table > tbody > tr:nth-child(2) > td > div > div.popup-model-content.pB20 > table > tbody > tr:nth-child(1) > td > table > tbody > tr:nth-child(2) > td:nth-child(1) > label > span', { timeout: 0 })
-			await page.click('#entityLookupdiv > form > div.w100p > table > tbody > tr:nth-child(2) > td > div > div.popup-model-content.pB20 > table > tbody > tr:nth-child(1) > td > table > tbody > tr:nth-child(2) > td:nth-child(1) > label > span')
-
-			await waitOneSecond()
-
-			await page.click('#resume_parser_import_id')
-
-			await page.waitForSelector('#Crm_Leads_FIRSTNAME_label', { timeout: 0 })
-
-			await page.select('select#Crm_Leads_LEADSOURCE', 'LinkedIn')
-
-			await page.select('select#Crm_Leads_LEADCF13', 'BRL')
-			await page.click('#Crm_Leads_COUNTRY')
-			await page.keyboard.press('Backspace')
-			await page.keyboard.press('Backspace')
-			await page.keyboard.press('Backspace')
-			await page.keyboard.press('Backspace')
-			await page.keyboard.press('Backspace')
-			await page.keyboard.press('Backspace')
-
-			await page.type('#Crm_Leads_COUNTRY', 'Brazil')
-
-			await page.keyboard.press("Tab")
-			await page.keyboard.press("Enter")
-			await waitTwoSeconds()
-			await page.type('select#Crm_Leads_LEADCF6', `${jobFit}`)
-			await page.keyboard.press("Tab")
-			await page.keyboard.press("Enter")
-			await waitTwoSeconds()
-			await page.type('select#Crm_Leads_LEADCF7', `${jobFit}`)
-			await page.click('#Crm_Leads_LEADCF81')
-			await waitThreeSeconds()
-			await page.click('#calHeader > tbody > tr:nth-child(3) > td.sel') // change the element weekly?
-			await page.select('select#Crm_Leads_LEADCF1', 'MD')
-			await page.select('select#Crm_Leads_STATUS', 'sent email')
-
-			await page.click('#saveLeadsBtn')
-
-			await waitThreeSeconds()
-			await waitThreeSeconds()
-			await waitThreeSeconds()
-
-			let temporaryScreenshotElement = await page.$('#dv_title')
-
-			await temporaryScreenshotElement.screenshot({ path: `./prints/${numeroDaScreenshot}.png` }, { delay: 2000 })
-			await numeroDaScreenshot++
-
-			let currentURL = page.url()
-
-			await fs.appendFile('./results/linkstoCheck', (numeroDaScreenshot - 1) + '\n')
-			await fs.appendFile('./results/linkstoCheck', currentURL + '\n\n')
-
-		}
-
-	}
-
 }
 
-checkHistoric()
+uploadCVs()
