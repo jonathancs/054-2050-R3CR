@@ -10,14 +10,6 @@ let positionNumber = '979'
 let jobFit = 'back-end dev'
 
 /* 
-
-	TRY push upload button at the en (capture of no name is detected)
-
-	then wait undefinitely until some element of the next screen appears
-
-*/
-
-/* 
 	back-end dev
 
 	QA
@@ -159,13 +151,9 @@ async function uploadCVs() {
 			await page.select('select#Crm_Leads_LEADCF1', 'MD')
 			await page.select('select#Crm_Leads_STATUS', 'sent email')
 
-			await page.click('#saveLeadsBtn')
+			try { await page.click('#saveLeadsBtn') } catch(err) {console.log(err.stack)}
 
-			await waitThreeSeconds()
-			await waitThreeSeconds()
-			await waitThreeSeconds()
-
-			let temporaryScreenshotElement = await page.$('#dv_title')
+			let temporaryScreenshotElement = await page.$('#dv_title', {timeout: 0})
 
 			await temporaryScreenshotElement.screenshot({ path: `./prints/${numeroDaScreenshot}.png` }, { delay: 2000 })
 			await numeroDaScreenshot++
