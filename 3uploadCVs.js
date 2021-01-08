@@ -6,8 +6,8 @@ const listOfCVsToUpload = require('./configs/3CVsToUpload.js')
 const uploadPage = 'https://recruit.zoho.com/recruit/org4314466/ImportParser.do?module=Candidates&type=importfromdocument'
 
 let numeroDaScreenshot = 1
-let positionNumber = '979'
-let jobFit = 'back-end dev'
+let positionNumber = '908'
+let jobFit = 'HR Recruiter'
 
 /* 
 	back-end dev
@@ -19,6 +19,8 @@ let jobFit = 'back-end dev'
 
 	project manager
 	business analyst
+
+	HR Recruiter
 */
 
 
@@ -30,11 +32,11 @@ async function uploadCVs() {
 	// await page.setViewport({ width: 1270, height: 600, deviceScaleFactor: 1, }); // notebook screen
 
 
-	
+
 	/*    function-calls to be done    */
 	await standardConfigurations()
 
-	await loginWithCookies()
+	await loginWithoutCookies()
 
 	/* 
 	
@@ -47,6 +49,10 @@ async function uploadCVs() {
 	*/
 
 	await CVs_upload()
+
+	// await browser.close()
+
+
 
 	// await browser.close()
 	/*   End of the calls   */
@@ -65,7 +71,7 @@ async function uploadCVs() {
 
 			let loopedCV = listOfCVsToUpload[i]
 
-			if (await page.url() != uploadPage) {await page.goto(uploadPage, { waitUntil: 'networkidle0' }).catch(e => void 0)}
+			if (await page.url() != uploadPage) { await page.goto(uploadPage, { waitUntil: 'networkidle0' }).catch(e => void 0) }
 
 			/* 
 				//backend
@@ -99,6 +105,16 @@ async function uploadCVs() {
 			await waitThreeSeconds()
 			await waitThreeSeconds()
 
+			try { // dismiss the reminders
+				await page.evaluate('document.querySelector("#reminderContent").children[0].children[1].children[0].click()')
+				await waitOneSecond()
+				await page.evaluate('document.querySelector("#reminder_bulkdismiss > label > span").click()')
+				await waitOneSecond()
+				await page.evaluate('document.querySelector("#reminder_bulkdismiss > input").click()')
+				await waitOneSecond()
+
+			} catch (err) { console.log("could'nt press the minimze reminder tab" + '\n\n') }
+
 			await page.waitForSelector('#importsecondaryItem > p.newSubTitle.pT35.pB0.ns-advanced > a', { timeout: 0 })
 			await page.click('#importsecondaryItem > p.newSubTitle.pT35.pB0.ns-advanced > a')
 
@@ -122,12 +138,26 @@ async function uploadCVs() {
 
 			await page.click('#resume_parser_import_id')
 
+			// second import page
 			await page.waitForSelector('#Crm_Leads_FIRSTNAME_label', { timeout: 0 })
 
 			await page.select('select#Crm_Leads_LEADSOURCE', 'LinkedIn')
 
 			await page.select('select#Crm_Leads_LEADCF13', 'BRL')
 			await page.click('#Crm_Leads_COUNTRY')
+			await waitTwoSeconds()
+			await page.type('#Crm_Leads_COUNTRY', 'Brazil')
+			await page.keyboard.press('Backspace')
+			await page.keyboard.press('Backspace')
+			await page.keyboard.press('Backspace')
+			await page.keyboard.press('Backspace')
+			await page.keyboard.press('Backspace')
+			await page.keyboard.press('Backspace')
+			await page.keyboard.press('Backspace')
+			await page.keyboard.press('Backspace')
+			await page.keyboard.press('Backspace')
+			await page.keyboard.press('Backspace')
+			await page.keyboard.press('Backspace')
 			await page.keyboard.press('Backspace')
 			await page.keyboard.press('Backspace')
 			await page.keyboard.press('Backspace')
@@ -146,16 +176,19 @@ async function uploadCVs() {
 			await waitTwoSeconds()
 			await page.type('select#Crm_Leads_LEADCF7', `${jobFit}`)
 			await page.click('#Crm_Leads_LEADCF81')
-			await waitThreeSeconds()
-			await page.evaluate('document.querySelector("#calHeader > tbody > tr:nth-child(4) > td.sel").click()') // change the NTH-CHILD weekly
+			await waitOneSecond()
+			await page.evaluate('document.querySelector("#calHeader > tbody > tr:nth-child(2) > td.sel").click()') // change the NTH-CHILD weekly
 			await page.select('select#Crm_Leads_LEADCF1', 'MD')
 			await page.select('select#Crm_Leads_STATUS', 'sent email')
 
-			try { await page.click('#saveLeadsBtn') } catch(err) {console.log(err.stack)}
+			await waitThreeSeconds()
 
-			let temporaryScreenshotElement = await page.$('#dv_title', {timeout: 0})
+			try { await page.click('#saveLeadsBtn') } catch (err) { console.log("could'nt press the IMPORT button" + '\n\n') }
 
-			await temporaryScreenshotElement.screenshot({ path: `./prints/${numeroDaScreenshot}.png` }, { delay: 2000 })
+			await waitThreeSeconds()
+			await waitThreeSeconds()
+
+			await page.screenshot({ path: `./prints/${numeroDaScreenshot}.png` }, { delay: 2000 })
 			await numeroDaScreenshot++
 
 			let currentURL = page.url()
@@ -177,7 +210,7 @@ async function uploadCVs() {
 
 	async function login_with_or_without_cookies() {
 
-		try {} catch (error) {console.log('\n' + error) }
+		try { } catch (error) { console.log('\n' + error) }
 
 		if (Object.keys(cookies).length) { loginWithCookies() } else { loginWithoutCookies() }
 

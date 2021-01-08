@@ -4,9 +4,9 @@ const credentials = require('./configs/credentials.json')
 const cookies = require('./configs/cookies.json')
 let numeroDaScreenshot = 1
 
-const positionNumber = '979'
-const jobFit = 'back-end dev'
-const fileToUpload = 'C:/Users/Jonathan Casagrande/Downloads/cvs/toBeUploaded/EN .net (34).pdf'
+let positionNumber = '1031'
+let jobFit = 'front-end dev'
+let fileToUpload = 'C:/Users/Jonathan Casagrande/Downloads/cvs/toBeUploaded/react ou backend.pdf'
 
 
 async function uploadCV() {
@@ -83,55 +83,60 @@ async function uploadCV() {
 	
 			await page.click('#resume_parser_import_id')
 	
+			// second import page
 			await page.waitForSelector('#Crm_Leads_FIRSTNAME_label', { timeout: 0 })
-	
+
 			await page.select('select#Crm_Leads_LEADSOURCE', 'LinkedIn')
-	
+
 			await page.select('select#Crm_Leads_LEADCF13', 'BRL')
 			await page.click('#Crm_Leads_COUNTRY')
-			await page.keyboard.press('Backspace')
-			await page.keyboard.press('Backspace')
-			await page.keyboard.press('Backspace')
-			await page.keyboard.press('Backspace')
-			await page.keyboard.press('Backspace')
-			await page.keyboard.press('Backspace')
-			await page.keyboard.press('Backspace')
-			await page.keyboard.press('Backspace')
-			await page.keyboard.press('Backspace')
-			await page.keyboard.press('Backspace')
-			await page.keyboard.press('Backspace')
-			await page.keyboard.press('Backspace')
-	
+			await waitTwoSeconds()
 			await page.type('#Crm_Leads_COUNTRY', 'Brazil')
-	
+			await page.keyboard.press('Backspace')
+			await page.keyboard.press('Backspace')
+			await page.keyboard.press('Backspace')
+			await page.keyboard.press('Backspace')
+			await page.keyboard.press('Backspace')
+			await page.keyboard.press('Backspace')
+			await page.keyboard.press('Backspace')
+			await page.keyboard.press('Backspace')
+			await page.keyboard.press('Backspace')
+			await page.keyboard.press('Backspace')
+			await page.keyboard.press('Backspace')
+			await page.keyboard.press('Backspace')
+			await page.keyboard.press('Backspace')
+			await page.keyboard.press('Backspace')
+			await page.keyboard.press('Backspace')
+			await page.keyboard.press('Backspace')
+			await page.keyboard.press('Backspace')
+
+			await page.type('#Crm_Leads_COUNTRY', 'Brazil')
+
 			await page.keyboard.press("Tab")
 			await page.keyboard.press("Enter")
-			// await page.type('select#Crm_Leads_LEADCF6', `${jobFit}`)
-			await page.keyboard.press('b')
-			await page.keyboard.press('a')
-			await page.keyboard.press('c')
-			await page.keyboard.press('k')
-			await page.keyboard.press('-')
-			await page.keyboard.press("Enter")
-	
+			await waitTwoSeconds()
+			await page.type('select#Crm_Leads_LEADCF6', `${jobFit}`)
 			await page.keyboard.press("Tab")
 			await page.keyboard.press("Enter")
-			await page.keyboard.press('b')
-			await page.keyboard.press('a')
-			await page.keyboard.press('c')
-			await page.keyboard.press('k')
-			await page.keyboard.press('-')
-			await page.keyboard.press("Enter")
+			await waitTwoSeconds()
+			await page.type('select#Crm_Leads_LEADCF7', `${jobFit}`)
 			await page.click('#Crm_Leads_LEADCF81')
-			await waitThreeSeconds()
-			await page.click('#calHeader > tbody > tr:nth-child(4) > td.sel') // change the element weekly?
-			// crmCalendar.displaySelectedDate('21 11 2020')
+			await waitOneSecond()
+			await page.evaluate('document.querySelector("#calHeader > tbody > tr:nth-child(2) > td.sel").click()') // change the NTH-CHILD weekly
 			await page.select('select#Crm_Leads_LEADCF1', 'MD')
 			await page.select('select#Crm_Leads_STATUS', 'sent email')
-	
-			await page.click('#saveLeadsBtn')
-	
+
 			await waitThreeSeconds()
+
+			await page.click('#Crm_Leads_COUNTRY')
+
+			await page.keyboard.press("Tab")
+			await page.keyboard.press("Enter")
+			await waitTwoSeconds()
+			await page.type('select#Crm_Leads_LEADCF6', `${jobFit}`)
+
+			try { await page.click('#saveLeadsBtn') } catch (err) { console.log("could'nt press the IMPORT button" + '\n\n') }
+
 			await waitThreeSeconds()
 			await waitThreeSeconds()
 	

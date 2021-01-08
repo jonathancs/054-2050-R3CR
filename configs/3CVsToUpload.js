@@ -1,9 +1,14 @@
 let listOfCVsToUpload = [
-    'D:/git/054-2050-R3CR/temporaryFiles/EN .net (39).pdf',
-    'D:/git/054-2050-R3CR/temporaryFiles/EN .net (40).pdf',
-    'D:/git/054-2050-R3CR/temporaryFiles/EN .net (41).pdf',
-    'D:/git/054-2050-R3CR/temporaryFiles/EN .net (42).pdf',
-    'D:/git/054-2050-R3CR/temporaryFiles/EN .net (43).pdf'
+    'C:/Users/Jonathan Casagrande/Downloads/cvs/toBeUploaded/recruiters colombia (1).pdf',
+    'C:/Users/Jonathan Casagrande/Downloads/cvs/toBeUploaded/recruiters colombia (2).pdf',
+    'C:/Users/Jonathan Casagrande/Downloads/cvs/toBeUploaded/recruiters colombia (3).pdf',
+    'C:/Users/Jonathan Casagrande/Downloads/cvs/toBeUploaded/recruiters colombia (4).pdf',
+    'C:/Users/Jonathan Casagrande/Downloads/cvs/toBeUploaded/recruiters colombia (5).pdf',
+    'C:/Users/Jonathan Casagrande/Downloads/cvs/toBeUploaded/recruiters colombia (6).pdf',
+    'C:/Users/Jonathan Casagrande/Downloads/cvs/toBeUploaded/recruiters colombia (7).pdf'
+
+
+
 
 ]
 
