@@ -111,7 +111,7 @@ async function checkHistoric() {
 
 			await waitThreeSeconds()
 
-			await page.screenshot({ path: `./prints/${numeroDaScreenshot}.png` }, { delay: 4000 })
+			await page.screenshot({ path: `./prints/${numeroDaScreenshot}.png` + 'a' }, { delay: 4000 })
 			await numeroDaScreenshot++
 			
 			// await ifHasHistoric()
