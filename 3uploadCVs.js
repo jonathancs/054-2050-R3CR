@@ -6,8 +6,8 @@ const listOfCVsToUpload = require('./configs/3CVsToUpload.js')
 const uploadPage = 'https://recruit.zoho.com/recruit/org4314466/ImportParser.do?module=Candidates&type=importfromdocument'
 
 let numeroDaScreenshot = 1
-let positionNumber = '908'
-let jobFit = 'HR Recruiter'
+let positionNumber = '1083'
+let jobFit = 'back-end dev'
 
 /* 
 	back-end dev
@@ -34,8 +34,8 @@ async function uploadCVs() {
 	/*========== adjust desired screen size ==========*/
 	/*========== 💻💻💻 ==========*/
 
-	// await greaterMonitorView()
-	await mediumMonitorView()
+	await greaterMonitorView()
+	// await mediumMonitorView()
 	// await notebookSizeView()
 
 
@@ -102,7 +102,7 @@ async function uploadCVs() {
 		await waitThreeSeconds()
 
 		await dismissPopupTabs()
-		
+
 		const inputUploadHandle = await page.$('input[type=file]', { timeout: 0 })
 
 		await inputUploadHandle.uploadFile(fileToUpload)
@@ -137,7 +137,7 @@ async function uploadCVs() {
 
 	async function uploadCV_secondPart_prepareInformations() {
 
-		await cvAlreadyExists()
+		// await cvAlreadyExists()
 
 		await dismissPopupTabs()
 
@@ -179,7 +179,7 @@ async function uploadCVs() {
 		await page.type('select#Crm_Leads_LEADCF7', `${jobFit}`)
 		await page.click('#Crm_Leads_LEADCF81')
 		await waitOneSecond()
-		await page.evaluate('document.querySelector("#calHeader > tbody > tr:nth-child(2) > td.sel").click()') // change the NTH-CHILD weekly
+		await page.evaluate('document.querySelector("#calHeader > tbody > tr:nth-child(3) > td.sel").click()') // change the NTH-CHILD weekly
 		await page.select('select#Crm_Leads_LEADCF1', 'MD')
 		await page.select('select#Crm_Leads_STATUS', 'sent email')
 
@@ -192,22 +192,38 @@ async function uploadCVs() {
 		await waitTwoSeconds()
 		await page.type('select#Crm_Leads_LEADCF6', `${jobFit}`)
 
-		try { await page.click('#saveLeadsBtn') } catch (err) { console.log("could'nt press the IMPORT button" + '\n\n') }
+		try { await page.click('#saveLeadsBtn') } catch (err) { console.log("could'nt press the IMPORT button" + '\n') }
 
 		await waitThreeSeconds()
 		await waitThreeSeconds()
 
-		let temporaryScreenshotElement = await page.$('#dv_title')
+		try {
 
-		await temporaryScreenshotElement.screenshot({ path: `./prints/${numeroDaScreenshot}.png` }, { delay: 2000 })
-		await numeroDaScreenshot++
+			let temporaryScreenshotElement = await page.$('#dv_title')
 
-		let currentURL = page.url()
+			await temporaryScreenshotElement.screenshot({ path: `./prints/${numeroDaScreenshot}.png` }, { delay: 2000 })
+			await numeroDaScreenshot++
 
-		await fs.appendFile('./results/linkstoCheck', (numeroDaScreenshot - 1) + '\n')
-		await fs.appendFile('./results/linkstoCheck', currentURL + '\n\n')
+			currentURL = page.url()
 
+			await fs.appendFile('./results/linkstoCheck', (numeroDaScreenshot - 1) + '\n')
+			await fs.appendFile('./results/linkstoCheck', currentURL + '\n')
+
+		} catch (err) {
+
+			await console.log("unable to upload file " + `${numeroDaScreenshot}` + '\n')
+
+			currentURL = page.url()
+
+			await fs.appendFile('./results/linkstoCheck', (numeroDaScreenshot) + '\n')
+
+			continue
+
+			await console.log('continuing loop')
+			await numeroDaScreenshot++
+		}
 	}
+
 
 	async function cvAlreadyExists() {
 
@@ -240,7 +256,7 @@ async function uploadCVs() {
 
 			// get informations in the profile
 			let profileURL = await page.url()
-			fs.appendFile('./results/linksToCheck', `${numeroDaScreenshot}` + 'alreadyExistProfile' + '\n' + profileURL )
+			fs.appendFile('./results/linksToCheck', `${numeroDaScreenshot}` + 'alreadyExistProfile' + '\n' + profileURL)
 			await page.screenshot({ path: `./prints/${numeroDaScreenshot} + 'insideProfileInfo1'.png` }, { delay: 2000 })
 			await page.click('#newleft_67512000002497884')
 			await waitOneSecond()
@@ -323,13 +339,13 @@ async function uploadCVs() {
 			await page.evaluate('document.querySelector("span[class=`fR remainderminimize`]").click()')
 			await page.evaluate('document.querySelector("span[class=`wms_minimizeicon wms_menu_minimize`]".click())')
 
-		} catch (err) { console.log("no reminder popup" + '\n\n') }
+		} catch (err) { console.log("no reminder popup" + '\n') }
 
 		try { // dismiss the chat
 
 			await page.evaluate('document.querySelector("span[class=`wms_minimizeicon wms_menu_minimize`]".click())')
 
-		} catch (err) { console.log("no chat popup" + '\n\n') }
+		} catch (err) { console.log("no chat popup" + '\n') }
 	}
 
 	async function greaterMonitorView() {
@@ -362,23 +378,23 @@ async function uploadCVs() {
 
 uploadCVs()
 
-/* 
+/*
 				//backend
 				if (loopedCV.match('dot net')) {let jobFit = 'back-end dev'}
 				if (loopedCV.match('python')) {let jobFit = 'back-end dev'}
 				if (loopedCV.match('java')) {let jobFit = 'back-end dev'}
-				
+
 				// QA
 				if (loopedCV.match('qa')) {let jobFit = 'QA'}
 				if (loopedCV.match('qa aut')) {let jobFit = 'QA automation'}
-				
+
 				// front
 				if (loopedCV.match('fe')) {let jobFit = 'front-end dev'}
 				if (loopedCV.match('angular')) {let jobFit = 'front-end dev'}
 				if (loopedCV.match('react')) {let jobFit = 'front-end dev'}
-				
+
 				// leading
 				if (loopedCV.match('pm')) {let jobFit = 'project manager'}
 				if (loopedCV.match('ba')) {let jobFit = 'business analyst'}
-	
+
 			*/
