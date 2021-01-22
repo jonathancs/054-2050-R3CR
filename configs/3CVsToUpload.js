@@ -1,7 +1,6 @@
 let listOfCVsToUpload = [
-    'D:/Usuarios/Jonnyboy/Downloads/profile (1).pdf',
-    'D:/Usuarios/Jonnyboy/Downloads/profile (2).pdf',
-
+    'C:/Users/Jonathan Casagrande/Downloads/cvs/toBeUploaded/ (1).pdf',
+    
 
 
 ]

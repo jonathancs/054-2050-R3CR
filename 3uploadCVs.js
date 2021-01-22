@@ -2,6 +2,16 @@
 TO DO:
 try save button, no name written
 
+switch dentro do  await uploadCV_secondPart_prepareInformations()
+OU
+involve everything with a try, if it fails to locate the ALREADY EXIST MESSAGE name, go for the other.
+
+2statusUpdateToRef
+
+involve everything with a try, if it fails to locate the name, go for the other.
+
+console.log('last prints X')
+
 */
 
 
@@ -12,9 +22,10 @@ const cookies = require('./configs/cookies.json')
 const listOfCVsToUpload = require('./configs/3CVsToUpload.js')
 const uploadPage = 'https://recruit.zoho.com/recruit/org4314466/ImportParser.do?module=Candidates&type=importfromdocument'
 
+errorCounter = 0
 let numeroDaScreenshot = 1
-let positionNumber = '1083'
-let jobFit = 'back-end dev'
+let positionNumber = '1034'
+let jobFit = 'QA automation'
 
 /* 
 	back-end dev
@@ -53,6 +64,8 @@ async function uploadCVs() {
 	await login()
 
 	await sequentialCVs_upload()
+
+	await close()
 
 	/*========== End of the calls ==========*/
 
@@ -93,213 +106,183 @@ async function uploadCVs() {
 
 		for (let i = 0; i < listOfCVsToUpload.length; i++) {
 
-			loopedCV = listOfCVsToUpload[i]
+			do {
 
-			if (await page.url() != uploadPage) { await page.goto(uploadPage, { waitUntil: 'networkidle0' }).catch(e => void 0) }
+				loopedCV = listOfCVsToUpload[i]
 
-			await uploadCV_firstPart_prepareTheFile()
-			await uploadCV_secondPart_prepareInformations()
+				if (await page.url() != uploadPage) { await page.goto(uploadPage, { waitUntil: 'networkidle0' }).catch(e => void 0) }
 
-			// 🔽 below the documentation 🔽
+				await uploadCV_firstPart_prepareTheFile()
+				await uploadCV_secondPart_prepareInformations()
 
-			async function uploadCV_firstPart_prepareTheFile() {
+				// 🔽 below the documentation 🔽
 
-				let fileToUpload = loopedCV
+				async function uploadCV_firstPart_prepareTheFile() {
 
-				await page.waitForSelector('input[type=file]', { timeout: 0 })
+					let fileToUpload = loopedCV
 
-				await waitThreeSeconds()
+					await page.waitForSelector('input[type=file]', { timeout: 0 })
 
-				const inputUploadHandle = await page.$('input[type=file]', { timeout: 0 })
+					await waitThreeSeconds()
 
-				await inputUploadHandle.uploadFile(fileToUpload)
+					const inputUploadHandle = await page.$('input[type=file]', { timeout: 0 })
 
-				await waitThreeSeconds()
-				await waitThreeSeconds()
+					await inputUploadHandle.uploadFile(fileToUpload)
 
-				await page.waitForSelector('#importsecondaryItem > p.newSubTitle.pT35.pB0.ns-advanced > a', { timeout: 0 })
-				await page.click('#importsecondaryItem > p.newSubTitle.pT35.pB0.ns-advanced > a')
+					await waitThreeSeconds()
+					await waitThreeSeconds()
 
-				await waitTwoSeconds()
+					await page.waitForSelector('#importsecondaryItem > p.newSubTitle.pT35.pB0.ns-advanced > a', { timeout: 0 })
+					await page.click('#importsecondaryItem > p.newSubTitle.pT35.pB0.ns-advanced > a')
 
-				await page.click('#Crm_Import_Leads_POTENTIALID')
-
-				await waitOneSecond()
-
-				await page.waitForSelector('#entityLookupdiv > form > div.cvpadding.bB0 > table > tbody > tr > td:nth-child(2) > div > input', positionNumber)
-				await page.type('#entityLookupdiv > form > div.cvpadding.bB0 > table > tbody > tr > td:nth-child(2) > div > input', positionNumber)
-
-				await page.keyboard.press("Enter")
-
-				await waitThreeSeconds()
-
-				await page.waitForSelector('#entityLookupdiv > form > div.w100p > table > tbody > tr:nth-child(2) > td > div > div.popup-model-content.pB20 > table > tbody > tr:nth-child(1) > td > table > tbody > tr:nth-child(2) > td:nth-child(1) > label > span', { timeout: 0 })
-				await page.click('#entityLookupdiv > form > div.w100p > table > tbody > tr:nth-child(2) > td > div > div.popup-model-content.pB20 > table > tbody > tr:nth-child(1) > td > table > tbody > tr:nth-child(2) > td:nth-child(1) > label > span')
-
-				await waitOneSecond()
-
-				await page.click('#resume_parser_import_id')
-
-			}
-
-			async function uploadCV_secondPart_prepareInformations() {
-
-				await cvAlreadyExists()
-
-				await fillProfileInformations()
-
-
-				// 🔽 documentation below 🔽
-
-
-				async function fillProfileInformations() {
-
-					await page.waitForSelector('#Crm_Leads_FIRSTNAME_label', { timeout: 0 })
-
-					await page.select('select#Crm_Leads_LEADSOURCE', 'LinkedIn')
-
-					await page.select('select#Crm_Leads_LEADCF13', 'BRL')
-					await page.click('#Crm_Leads_COUNTRY')
 					await waitTwoSeconds()
-					await page.type('#Crm_Leads_COUNTRY', 'Brazil')
-					await page.keyboard.press('Backspace')
-					await page.keyboard.press('Backspace')
-					await page.keyboard.press('Backspace')
-					await page.keyboard.press('Backspace')
-					await page.keyboard.press('Backspace')
-					await page.keyboard.press('Backspace')
-					await page.keyboard.press('Backspace')
-					await page.keyboard.press('Backspace')
-					await page.keyboard.press('Backspace')
-					await page.keyboard.press('Backspace')
-					await page.keyboard.press('Backspace')
-					await page.keyboard.press('Backspace')
-					await page.keyboard.press('Backspace')
-					await page.keyboard.press('Backspace')
-					await page.keyboard.press('Backspace')
-					await page.keyboard.press('Backspace')
-					await page.keyboard.press('Backspace')
 
-					await page.type('#Crm_Leads_COUNTRY', 'Brazil')
+					await page.click('#Crm_Import_Leads_POTENTIALID')
 
-					await page.keyboard.press("Tab")
-					await page.keyboard.press("Enter")
-					await waitTwoSeconds()
-					await page.type('select#Crm_Leads_LEADCF6', `${jobFit}`)
-					await page.keyboard.press("Tab")
-					await page.keyboard.press("Enter")
-					await waitTwoSeconds()
-					await page.type('select#Crm_Leads_LEADCF7', `${jobFit}`)
-					await page.click('#Crm_Leads_LEADCF81')
 					await waitOneSecond()
-					await page.evaluate('document.querySelector("#calHeader > tbody > tr:nth-child(3) > td.sel").click()') // change the NTH-CHILD weekly
-					await page.select('select#Crm_Leads_LEADCF1', 'MD')
-					await page.select('select#Crm_Leads_STATUS', 'sent email')
 
-					await waitThreeSeconds()
+					await page.waitForSelector('#entityLookupdiv > form > div.cvpadding.bB0 > table > tbody > tr > td:nth-child(2) > div > input', positionNumber)
+					await page.type('#entityLookupdiv > form > div.cvpadding.bB0 > table > tbody > tr > td:nth-child(2) > div > input', positionNumber)
 
-					await page.click('#Crm_Leads_COUNTRY')
-
-					await page.keyboard.press("Tab")
 					await page.keyboard.press("Enter")
-					await waitTwoSeconds()
-					await page.type('select#Crm_Leads_LEADCF6', `${jobFit}`)
-
-					try { await page.click('#saveLeadsBtn') } catch (err) { console.log("could'nt press the IMPORT button" + '\n') }
 
 					await waitThreeSeconds()
-					await waitThreeSeconds()
 
-					try {
+					await page.waitForSelector('#entityLookupdiv > form > div.w100p > table > tbody > tr:nth-child(2) > td > div > div.popup-model-content.pB20 > table > tbody > tr:nth-child(1) > td > table > tbody > tr:nth-child(2) > td:nth-child(1) > label > span', { timeout: 0 })
+					await page.click('#entityLookupdiv > form > div.w100p > table > tbody > tr:nth-child(2) > td > div > div.popup-model-content.pB20 > table > tbody > tr:nth-child(1) > td > table > tbody > tr:nth-child(2) > td:nth-child(1) > label > span')
 
-						let temporaryScreenshotElement = await page.$('#dv_title')
+					await waitOneSecond()
 
-						await temporaryScreenshotElement.screenshot({ path: `./prints/${numeroDaScreenshot}.png` }, { delay: 2000 })
-						await numeroDaScreenshot++
-
-						currentURL = page.url()
-
-						await fs.appendFile('./results/linkstoCheck', (numeroDaScreenshot - 1) + '\n')
-						await fs.appendFile('./results/linkstoCheck', currentURL + '\n')
-
-					} catch (err) {
-
-						currentURL = page.url()
-
-						await fs.appendFile('./results/linkstoCheck', (numeroDaScreenshot) + '\n')
-
-						await console.log('continuing loop')
-						await numeroDaScreenshot++
-
-						return
-						
-					}
+					await page.click('#resume_parser_import_id')
 
 				}
 
-				async function cvAlreadyExists() {
+				async function uploadCV_secondPart_prepareInformations() {
 
-					if (await page.waitForSelector('div[class="crm-msg-cnt"]')) { // if 'already exist' message appear
+					await cvAlreadyExists()
 
-						// close 'record already exists' POPUP
+					await fillProfileInformations()
+
+
+					// 🔽 documentation below 🔽
+
+
+					async function fillProfileInformations() {
+
+						await page.waitForSelector('#Crm_Leads_FIRSTNAME_label', { timeout: 0 })
+
+						await page.select('select#Crm_Leads_LEADSOURCE', 'LinkedIn')
+
+						await page.select('select#Crm_Leads_LEADCF13', 'BRL')
+						await page.click('#Crm_Leads_COUNTRY')
 						await waitTwoSeconds()
-						await page.click('span[class="crm-msg-close"]')
-						
-						// screenshot the current infos
-						await page.screenshot({ path: `./prints/${numeroDaScreenshot} + 'alreadyExistInfo1'.png` }, { delay: 2000 })
+						await page.type('#Crm_Leads_COUNTRY', 'Brazil')
+						await page.keyboard.press('Backspace')
+						await page.keyboard.press('Backspace')
+						await page.keyboard.press('Backspace')
+						await page.keyboard.press('Backspace')
+						await page.keyboard.press('Backspace')
+						await page.keyboard.press('Backspace')
+						await page.keyboard.press('Backspace')
+						await page.keyboard.press('Backspace')
+						await page.keyboard.press('Backspace')
+						await page.keyboard.press('Backspace')
+						await page.keyboard.press('Backspace')
+						await page.keyboard.press('Backspace')
+						await page.keyboard.press('Backspace')
+						await page.keyboard.press('Backspace')
+						await page.keyboard.press('Backspace')
+						await page.keyboard.press('Backspace')
+						await page.keyboard.press('Backspace')
 
-						// get the current information
+						await page.type('#Crm_Leads_COUNTRY', 'Brazil')
+
+						await page.keyboard.press("Tab")
+						await page.keyboard.press("Enter")
+						await waitTwoSeconds()
+						await page.type('select#Crm_Leads_LEADCF6', `${jobFit}`)
+						await page.keyboard.press("Tab")
+						await page.keyboard.press("Enter")
+						await waitTwoSeconds()
+						await page.type('select#Crm_Leads_LEADCF7', `${jobFit}`)
+						await page.click('#Crm_Leads_LEADCF81')
+						await waitOneSecond()
+						await page.evaluate(`document.querySelector('td[class="sel"]').click()`) // change the NTH-CHILD weekly
+						await page.select('select#Crm_Leads_LEADCF1', 'MD')
+						await page.select('select#Crm_Leads_STATUS', 'sent email')
+
+						await waitThreeSeconds()
+
+						await page.click('#Crm_Leads_COUNTRY')
+
+						await page.keyboard.press("Tab")
+						await page.keyboard.press("Enter")
+						await waitTwoSeconds()
+						await page.type('select#Crm_Leads_LEADCF6', `${jobFit}`)
+
+						try { await page.click('#saveLeadsBtn') } catch (err) { console.log("could'nt press the IMPORT button" + '\n') }
+
+						await waitThreeSeconds()
+						await waitThreeSeconds()
 
 						try {
 
-							firstName = await page.evaluate('document.querySelector("#Crm_Leads_FIRSTNAME").value')
-							lastName = await page.evaluate('document.querySelector("#Crm_Leads_LASTNAME").value')
+							let temporaryScreenshotElement = await page.$('#dv_title')
 
-							
+							await temporaryScreenshotElement.screenshot({ path: `./prints/${numeroDaScreenshot}.png` }, { delay: 2000 })
+							await numeroDaScreenshot++
 
-							if (firstName != "" || " ") {
+							currentURL = page.url()
 
-								// search the already existing profile and enter
-								await page.click('#sSearch')
-								await page.click('#gsearchTextBox')
-								await page.type('#gsearchTextBox', firstName + ' ' + lastName)
-								await waitThreeSeconds()
-								await page.evaluate('document.querySelector("#search_Leads").children[0].click()')
+							await fs.appendFile('./results/linkstoCheck', (numeroDaScreenshot - 1) + '\n')
+							await fs.appendFile('./results/linkstoCheck', currentURL + '\n')
 
-								await waitThreeSeconds()
-								await waitThreeSeconds()
+						} catch (err) {
 
-								// get informations in the profile
-								let profileURL = await page.url()
-								fs.appendFile( './results/linksToCheck', '\n' + `${numeroDaScreenshot}` + 'alreadyExistProfile' + '\n' + profileURL )
-								await page.screenshot( { path: `./prints/${numeroDaScreenshot} + 'insideProfileInfo1'.png` }, { delay: 2000 } )
-								await page.click('#newleft_67512000002497884')
-								await waitOneSecond()
-								await page.evaluate('div[class="atchName"].children[0].click()')
-								await waitThreeSeconds()
-								await page.screenshot({ path: `./prints/${numeroDaScreenshot} + 'insideProfileInfo2'.png` }, { delay: 2000 })
-								await page.click('a[class="zrc-close-popup"]')
+							currentURL = page.url()
 
-								return true
-							}
+							await fs.appendFile('./results/linkstoCheck', (numeroDaScreenshot) + '\n')
 
-						} catch (error) {
-
-							await fs.appendFile('./results/linksToCheck', '\n\n' + 'unable to upload ' + `${numeroDaScreenshot}`)
+							await console.log('continuing loop')
+							await numeroDaScreenshot++
 
 							return
 
 						}
 
+					}
 
+					async function cvAlreadyExists() {
 
+						profileURL = await page.url()
+
+						await page.waitForSelector('h4[class="marT24 marB8"]', { timeout: 0 })
+
+						if (await page.waitForSelector('div[class="crm-msg-cnt"]', { timeout: 3000 })) { // if 'already exist' message appear
+
+							// close 'record already exists' POPUP
+							await page.click('span[class="crm-msg-close"]')
+
+							// screenshot the current infos
+							await page.screenshot({ path: `./prints/${numeroDaScreenshot}alreadyExistInfo1.png` }, { delay: 2000 })
+
+							// write the jump
+							await fs.appendFile('./results/linksToCheck', '\n' + `${numeroDaScreenshot}` + 'alreadyExistInfo' + '\n' + profileURL)
+
+							break // wasn't enough to stop the application
+							// continue
+							// return
+
+							// continue;
+							// return;
+
+						}
 
 					}
 
 				}
 
-			
-			}
+			} while (errorCounter < 0)
 
 		}
 
@@ -409,3 +392,63 @@ async function uploadCVs() {
 }
 
 uploadCVs()
+
+/*
+
+try {
+
+								firstName = await page.evaluate('document.querySelector("#Crm_Leads_FIRSTNAME").value')
+								lastName = await page.evaluate('document.querySelector("#Crm_Leads_LASTNAME").value')
+
+								if (firstName != "" || " ") {
+
+									// search the already existing profile and enter
+									await page.click('#sSearch')
+									await page.click('#gsearchTextBox')
+									await page.type('#gsearchTextBox', firstName + ' ' + lastName)
+									await waitThreeSeconds()
+									await page.evaluate('document.querySelector("#search_Leads").children[0].click()')
+
+									await waitThreeSeconds()
+									await waitThreeSeconds()
+
+									// get informations in the profile
+									let profileURL = await page.url()
+									await fs.appendFile('./results/linksToCheck', '\n' + `${numeroDaScreenshot}` + 'alreadyExistInfo' + '\n' + profileURL)
+									await page.screenshot({ path: `./prints/${numeroDaScreenshot}alreadyExistInfo2.png` }, { delay: 2000 })
+									await page.click('#newleft_67512000002497884')
+									await waitOneSecond()
+									await page.evaluate('div[class="atchName"].children[0].click()')
+									await waitThreeSeconds()
+									await page.screenshot({ path: `./prints/${numeroDaScreenshot}alreadyExistInfo3.png` }, { delay: 2000 })
+									await page.click('a[class="zrc-close-popup"]')
+
+									errorCounter++
+									numeroDaScreenshot++
+
+								}
+
+							} catch (error) {
+
+								await fs.appendFile('./results/linksToCheck', '\n\n' + `${numeroDaScreenshot} + ' already existed' + '\n'`)
+
+								errorCounter++
+								numeroDaScreenshot++
+
+							}
+
+
+
+
+
+
+
+							(node:21404) UnhandledPromiseRejectionWarning: ReferenceError: profileURL is not defined
+	at cvAlreadyExists (D:\repo\054-2050-R3CR\3uploadCVs.js:258:115)
+	at async uploadCV_secondPart_prepareInformations (D:\repo\054-2050-R3CR\3uploadCVs.js:152:6)
+	at async sequentialCVs_upload (D:\repo\054-2050-R3CR\3uploadCVs.js:106:5)
+	at async uploadCVs (D:\repo\054-2050-R3CR\3uploadCVs.js:56:2)
+(node:21404) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). To terminate the node process on unhandled promise rejection, use the CLI flag `--unhandled-rejections=strict` (see https://nodejs.org/api/cli.html#cli_unhandled_rejections_mode). (rejection id: 1)
+(node:21404) [DEP0018] DeprecationWarning: Unhandled promise rejections are deprecated. In the future, promise rejections that are not handled will terminate the Node.js process with a non-zero exit code.
+
+*/

@@ -3,7 +3,7 @@ const puppeteer = require('puppeteer')
 const credentials = require('./configs/credentials.json')
 const cookies = require('./configs/cookies.json')
 const refByCandidateList = require('./configs/2statusUpdateToRefByCandidateConfigs.js')
-let numeroDaScreenshot = 1
+let numeroDaScreenshot = 51
 
 async function checkHistoric() {
 
