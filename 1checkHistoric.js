@@ -4,6 +4,9 @@ const credentials = require('./configs/credentials.json')
 const cookies = require('./configs/cookies.json')
 const candidates = require('./configs/1checkHistoricConfigs.js')
 
+// site for keyboard keys 
+// https://github.com/puppeteer/puppeteer/blob/main/src/common/USKeyboardLayout.ts
+
 let numeroDaScreenshot = 1
 
 async function checkHistoric() {
@@ -40,7 +43,7 @@ async function checkHistoric() {
 
 		await page.setDefaultNavigationTimeout(0)
 		const context = browser.defaultBrowserContext()
-		context.overridePermissions("https://recruit.zoho.com/recruit/org4314466/ShowTab.do?module=Candidates", ["geolocation", "notifications"]) // An array of permissions
+		context.overridePermissions("https://recruit.zoho.com/recruit/org4314466/ImportParser.do?module=Candidates&type=importfromdocument", ["geolocation", "notifications"]) // An array of permissions
 		// await page.setViewport({ width: 1920, height: 1200, deviceScaleFactor: 1, }) // greater monitor
 		await page.setViewport({ width: 1270, height: 768, deviceScaleFactor: 1, }); // notebook screen
 	}
@@ -49,6 +52,10 @@ async function checkHistoric() {
 
 		if (Object.keys(cookies).length) { loginWithCookies() } else { loginWithoutCookies() }
 
+		let landingPage = 'https://recruit.zoho.com/recruit/org4314466/ImportParser.do?module=Candidates&type=importfromdocument'
+
+		await page.goto(landingPage, {waitUntil : 'networkidle2' }).catch(e => void 0)
+
 	}
 
 	async function loginWithCookies() {
@@ -56,13 +63,13 @@ async function checkHistoric() {
 		const cookiesString = await fs.readFile('./configs/cookies.json');
 		const cookies = JSON.parse(cookiesString);
 		await page.setCookie(...cookies);
-		await page.goto(`https://recruit.zoho.com/recruit/org4314466/ShowTab.do?module=Candidates`, { waitUntil: 'networkidle0' })
+		await page.goto(`https://recruit.zoho.com/recruit/org4314466/ImportParser.do?module=Candidates&type=importfromdocument`, { waitUntil: 'networkidle0' })
 
 	}
 
 	async function loginWithoutCookies() {
 
-		await page.goto('https://recruit.zoho.com/recruit/org4314466/ShowTab.do?module=Candidates', { waitUntil: 'networkidle0' })
+		await page.goto('https://recruit.zoho.com/recruit/org4314466/ImportParser.do?module=Candidates&type=importfromdocument', { waitUntil: 'networkidle0' })
 
 		await insertCredentials()
 
@@ -102,7 +109,7 @@ async function checkHistoric() {
 		for (let i = 0; i < candidates.length; i++) {
 			let loopedName = candidates[i]
 
-			await page.goto('https://recruit.zoho.com/recruit/org4314466/ShowTab.do?module=Candidates', {waitUntil : 'networkidle2' }).catch(e => void 0)
+			await waitThreeSeconds()
 
 			await page.waitForSelector("#qIconDiv > table > tbody > tr > td:nth-child(2)")
 			await page.click("#qIconDiv > table > tbody > tr > td:nth-child(2)")
@@ -110,14 +117,60 @@ async function checkHistoric() {
 			await page.type('#gsearchTextBox', loopedName, { delay: 30 })
 
 			await waitThreeSeconds()
+			await waitTwoSeconds()
 
-			await page.screenshot({ path: `./prints/${numeroDaScreenshot}.png` + 'a' }, { delay: 4000 })
-			await numeroDaScreenshot++
-			
+			let checkIfPossibleMatches = await page.evaluate(`document.querySelectorAll('strong')[0].innerText`)
+
+			if (checkIfPossibleMatches) {
+
+				await page.screenshot({ path: `./prints/${numeroDaScreenshot}a.png`}, { delay: 4000 })
+				await numeroDaScreenshot++
+
+				match1 = await page.evaluate(`document.querySelectorAll('a[class="ss-view-profile"]')[0].href`)
+				await fs.appendFile('./results/linksToCheck', `possible matches for ${numeroDaScreenshot}` + '\n')
+				await fs.appendFile('./results/linksToCheck',  `${match1}` + '\n')
+				
+				try {
+					
+					match2 = await page.evaluate(`document.querySelectorAll('a[class="ss-view-profile"]')[1].href`)
+					await fs.appendFile('./results/linksToCheck',  `${match2}` + '\n')
+
+				} catch (error) { 1 + 1 }
+
+				try {
+					
+					match3 = await page.evaluate(`document.querySelectorAll('a[class="ss-view-profile"]')[2].href`)
+					await fs.appendFile('./results/linksToCheck',  `${match3}` + '\n')
+					
+				} catch (error) { 1 + 1 }
+
+				await fs.appendFile('./results/linksToCheck',  '\n\n\n')
+
+
+			}
+
+			await page.click('#gsearchTextBox')
+			await page.click('#gsearchTextBox')
+			await page.click('#gsearchTextBox')
+			await backspaceALot()
+
 			// await ifHasHistoric()
 
 			// await page.waitForSelector('#closenewsearchbar')
 			// await page.click('#closenewsearchbar')
+
+			// 🔽 documentation below 🔽
+
+			async function backspaceALot() {
+
+				for (let backSpaceloopCounter = 0; backSpaceloopCounter < 50; backSpaceloopCounter++) {
+					
+					await page.keyboard.press('Backspace')
+					
+				}
+
+
+			}
 
 		}
 
@@ -151,7 +204,7 @@ async function checkHistoric() {
 			await page.screenshot({ path: `./prints/${numeroDaScreenshot}.png` }, { delay: 4000 })
 			await numeroDaScreenshot++
 
-			await page.goto(`https://recruit.zoho.com/recruit/org4314466/ShowTab.do?module=Candidates`, { waitUntil: 'networkidle0' })
+			await page.goto(`https://recruit.zoho.com/recruit/org4314466/ImportParser.do?module=Candidates&type=importfromdocument`, { waitUntil: 'networkidle0' })
 
 		}
 	}
