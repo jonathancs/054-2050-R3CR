@@ -1,11 +1,9 @@
 const fs = require('fs').promises;
 const puppeteer = require('puppeteer')
-const credentials = require('./configs/credentials.json')
-const cookies = require('./configs/cookies.json')
-const candidates = require('./configs/1checkHistoricConfigs.js')
+const credentials = require('./generalConfigs/credentials.json')
+const cookies = require('./generalConfigs/cookies.json')
+const candidates = require('./1backBone/namesToBeChecked.js')
 
-// site for keyboard keys 
-// https://github.com/puppeteer/puppeteer/blob/main/src/common/USKeyboardLayout.ts
 
 let numeroDaScreenshot = 1
 
@@ -58,9 +56,154 @@ async function checkHistoric() {
 
 	}
 
+	async function lookCandidates() {
+		for (let i = 0; i < candidates.length; i++) {
+			let loopedName = candidates[i]
+
+			await waitThreeSeconds()
+
+			await page.waitForSelector("#qIconDiv > table > tbody > tr > td:nth-child(2)")
+			await page.click("#qIconDiv > table > tbody > tr > td:nth-child(2)")
+
+			await page.type('#gsearchTextBox', loopedName, { delay: 30 })
+
+			await waitThreeSeconds()
+			await waitTwoSeconds()
+
+			try {
+
+				result0 = await page.evaluate(`document.querySelectorAll('strong')[0].innerText`)
+				result1 = await page.evaluate(`document.querySelectorAll('strong')[1].innerText`)
+				result2 = await page.evaluate(`document.querySelectorAll('strong')[2].innerText`)
+				result3 = await page.evaluate(`document.querySelectorAll('strong')[3].innerText`)
+				result4 = await page.evaluate(`document.querySelectorAll('strong')[4].innerText`)
+				result5 = await page.evaluate(`document.querySelectorAll('strong')[5].innerText`)
+				result6 = await page.evaluate(`document.querySelectorAll('strong')[6].innerText`)
+				result7 = await page.evaluate(`document.querySelectorAll('strong')[7].innerText`)
+				
+			} catch (error) { 1 + 1 }
+
+
+			if (result0.match(loopedName)) {
+
+				await page.screenshot({ path: `./1backBone/prints/${numeroDaScreenshot}a.png`}, { delay: 4000 })
+				await numeroDaScreenshot++
+
+				match0 = await page.evaluate(`document.querySelectorAll('a[class="ss-view-profile"]')[0].href`)
+				await fs.appendFile('./1backBone/results', `possible matches for ${loopedName}` + ' ' + `${numeroDaScreenshot}` + '\n')
+				await fs.appendFile('./1backBone/results',  `${match0}` + '\n\n')
+
+			}
+
+			if (result1.match(loopedName)) {
+
+				await page.screenshot({ path: `./1backBone/prints/${numeroDaScreenshot}a.png`}, { delay: 4111 })
+				await numeroDaScreenshot++
+
+				match1 = await page.evaluate(`document.querySelectorAll('a[class="ss-view-profile"]')[1].href`)
+				await fs.appendFile('./1backBone/results', `possible matches for ${loopedName}` + ' ' + `${numeroDaScreenshot}` + '\n')
+				await fs.appendFile('./1backBone/results',  `${match1}` + '\n\n')
+
+			}
+
+			if (result2.match(loopedName)) {
+
+				await page.screenshot({ path: `./1backBone/prints/${numeroDaScreenshot}a.png`}, { delay: 4111 })
+				await numeroDaScreenshot++
+
+				match2 = await page.evaluate(`document.querySelectorAll('a[class="ss-view-profile"]')[2].href`)
+				await fs.appendFile('./1backBone/results', `possible matches for ${loopedName}` + ' ' + `${numeroDaScreenshot}` + '\n')
+				await fs.appendFile('./1backBone/results',  `${match2}` + '\n\n')
+
+			}
+
+			if (result3.match(loopedName)) {
+
+				await page.screenshot({ path: `./1backBone/prints/${numeroDaScreenshot}a.png`}, { delay: 4111 })
+				await numeroDaScreenshot++
+
+				match3 = await page.evaluate(`document.querySelectorAll('a[class="ss-view-profile"]')[3].href`)
+				await fs.appendFile('./1backBone/results', `possible matches for ${loopedName}` + ' ' + `${numeroDaScreenshot}` + '\n')
+				await fs.appendFile('./1backBone/results',  `${match3}` + '\n\n')
+
+			}
+
+			if (result4.match(loopedName)) {
+
+				await page.screenshot({ path: `./1backBone/prints/${numeroDaScreenshot}a.png`}, { delay: 4111 })
+				await numeroDaScreenshot++
+
+				match4 = await page.evaluate(`document.querySelectorAll('a[class="ss-view-profile"]')[4].href`)
+				await fs.appendFile('./1backBone/results', `possible matches for ${loopedName}` + ' ' + `${numeroDaScreenshot}` + '\n')
+				await fs.appendFile('./1backBone/results',  `${match4}` + '\n\n')
+
+			}
+
+			if (result5.match(loopedName)) {
+
+				await page.screenshot({ path: `./1backBone/prints/${numeroDaScreenshot}a.png`}, { delay: 4111 })
+				await numeroDaScreenshot++
+
+				match5 = await page.evaluate(`document.querySelectorAll('a[class="ss-view-profile"]')[5].href`)
+				await fs.appendFile('./1backBone/results', `possible matches for ${loopedName}` + ' ' + `${numeroDaScreenshot}` + '\n')
+				await fs.appendFile('./1backBone/results',  `${match5}` + '\n\n')
+
+			}
+
+			if (result6.match(loopedName)) {
+
+				await page.screenshot({ path: `./1backBone/prints/${numeroDaScreenshot}a.png`}, { delay: 4111 })
+				await numeroDaScreenshot++
+
+				match6 = await page.evaluate(`document.querySelectorAll('a[class="ss-view-profile"]')[6].href`)
+				await fs.appendFile('./1backBone/results', `possible matches for ${loopedName}` + ' ' + `${numeroDaScreenshot}` + '\n')
+				await fs.appendFile('./1backBone/results',  `${match6}` + '\n\n')
+
+			}
+
+			if (result7.match(loopedName)) {
+
+				await page.screenshot({ path: `./1backBone/prints/${numeroDaScreenshot}a.png`}, { delay: 4111 })
+				await numeroDaScreenshot++
+
+				match7 = await page.evaluate(`document.querySelectorAll('a[class="ss-view-profile"]')[7].href`)
+				await fs.appendFile('./1backBone/results', `possible matches for ${loopedName}` + ' ' + `${numeroDaScreenshot}` + '\n')
+				await fs.appendFile('./1backBone/results',  `${match7}` + '\n\n')
+
+			}
+
+			await page.click('#gsearchTextBox')
+			await page.click('#gsearchTextBox')
+			await page.click('#gsearchTextBox')
+			await backspaceALot()
+
+			// await ifHasHistoric()
+
+			// await page.waitForSelector('#closenewsearchbar')
+			// await page.click('#closenewsearchbar')
+
+			// 🔽 documentation below 🔽
+
+			async function backspaceALot() {
+
+				for (let backSpaceloopCounter = 0; backSpaceloopCounter < 50; backSpaceloopCounter++) {
+					
+					await page.keyboard.press('Backspace')
+					
+				}
+
+
+			}
+
+		}
+
+
+	}
+
+
 	async function loginWithCookies() {
 
-		const cookiesString = await fs.readFile('./configs/cookies.json');
+		const cookiesString = await fs.readFile('./generalConfigs/cookies.json');
 		const cookies = JSON.parse(cookiesString);
 		await page.setCookie(...cookies);
 		await page.goto(`https://recruit.zoho.com/recruit/org4314466/ImportParser.do?module=Candidates&type=importfromdocument`, { waitUntil: 'networkidle0' })
@@ -103,110 +246,6 @@ async function checkHistoric() {
 		const cookies = await page.cookies();
 		await fs.writeFile('./configs/cookies.json', JSON.stringify(cookies, null, 2));
 
-	}
-	
-	async function lookCandidates() {
-		for (let i = 0; i < candidates.length; i++) {
-			let loopedName = candidates[i]
-
-			await waitThreeSeconds()
-
-			await page.waitForSelector("#qIconDiv > table > tbody > tr > td:nth-child(2)")
-			await page.click("#qIconDiv > table > tbody > tr > td:nth-child(2)")
-
-			await page.type('#gsearchTextBox', loopedName, { delay: 30 })
-
-			await waitThreeSeconds()
-			await waitTwoSeconds()
-
-			let checkIfPossibleMatches = await page.evaluate(`document.querySelectorAll('strong')[0].innerText`)
-
-			if (checkIfPossibleMatches) {
-
-				await page.screenshot({ path: `./prints/${numeroDaScreenshot}a.png`}, { delay: 4000 })
-				await numeroDaScreenshot++
-
-				match1 = await page.evaluate(`document.querySelectorAll('a[class="ss-view-profile"]')[0].href`)
-				await fs.appendFile('./results/linksToCheck', `possible matches for ${numeroDaScreenshot}` + '\n')
-				await fs.appendFile('./results/linksToCheck',  `${match1}` + '\n')
-				
-				try {
-					
-					match2 = await page.evaluate(`document.querySelectorAll('a[class="ss-view-profile"]')[1].href`)
-					await fs.appendFile('./results/linksToCheck',  `${match2}` + '\n')
-
-				} catch (error) { 1 + 1 }
-
-				try {
-					
-					match3 = await page.evaluate(`document.querySelectorAll('a[class="ss-view-profile"]')[2].href`)
-					await fs.appendFile('./results/linksToCheck',  `${match3}` + '\n')
-					
-				} catch (error) { 1 + 1 }
-
-				await fs.appendFile('./results/linksToCheck',  '\n\n\n')
-
-
-			}
-
-			await page.click('#gsearchTextBox')
-			await page.click('#gsearchTextBox')
-			await page.click('#gsearchTextBox')
-			await backspaceALot()
-
-			// await ifHasHistoric()
-
-			// await page.waitForSelector('#closenewsearchbar')
-			// await page.click('#closenewsearchbar')
-
-			// 🔽 documentation below 🔽
-
-			async function backspaceALot() {
-
-				for (let backSpaceloopCounter = 0; backSpaceloopCounter < 50; backSpaceloopCounter++) {
-					
-					await page.keyboard.press('Backspace')
-					
-				}
-
-
-			}
-
-		}
-
-
-	}
-
-	async function ifHasHistoric() {
-
-		let matchedName = await page.evaluate('document.querySelector("#search_Leads").children[0].children[1].children[0].children[0].innerText')
-
-		let candidatePageLink = await page.evaluate('document.querySelector("#search_Leads").children[0].children[2].href')
-
-		if (matchedName) {
-			// faced a javascript-code-structure problem
-			// i can't refer LOOPEDNAME from the previous FOR loop.
-
-			await page.goto(candidatePageLink, { waitUntil: 'networkidle0' })
-
-			await page.screenshot({ path: `./prints/${numeroDaScreenshot}.png` }, { delay: 4000 })
-			await numeroDaScreenshot++
-
-			await page.click('#newleft_Notes')
-
-			await page.screenshot({ path: `./prints/${numeroDaScreenshot}.png` }, { delay: 4000 })
-			await numeroDaScreenshot++
-
-			await page.click('#newleft_Activities')
-
-			await waitThreeSeconds()
-
-			await page.screenshot({ path: `./prints/${numeroDaScreenshot}.png` }, { delay: 4000 })
-			await numeroDaScreenshot++
-
-			await page.goto(`https://recruit.zoho.com/recruit/org4314466/ImportParser.do?module=Candidates&type=importfromdocument`, { waitUntil: 'networkidle0' })
-
-		}
 	}
 
 	async function waitOneSecond() {
