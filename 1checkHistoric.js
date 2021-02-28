@@ -52,7 +52,7 @@ async function checkHistoric() {
 
 		let landingPage = 'https://recruit.zoho.com/recruit/org4314466/ImportParser.do?module=Candidates&type=importfromdocument'
 
-		await page.goto(landingPage, {waitUntil : 'networkidle2' }).catch(e => void 0)
+		await page.goto(landingPage, { waitUntil: 'networkidle2' }).catch(e => void 0)
 
 	}
 
@@ -80,101 +80,131 @@ async function checkHistoric() {
 				result5 = await page.evaluate(`document.querySelectorAll('strong')[5].innerText`)
 				result6 = await page.evaluate(`document.querySelectorAll('strong')[6].innerText`)
 				result7 = await page.evaluate(`document.querySelectorAll('strong')[7].innerText`)
-				
+
 			} catch (error) { 1 + 1 }
 
 
-			if (result0.match(loopedName)) {
 
-				await page.screenshot({ path: `./1backBone/prints/${numeroDaScreenshot}a.png`}, { delay: 4000 })
-				await numeroDaScreenshot++
+			try {
 
-				match0 = await page.evaluate(`document.querySelectorAll('a[class="ss-view-profile"]')[0].href`)
-				await fs.appendFile('./1backBone/results', `possible matches for ${loopedName}` + ' ' + `${numeroDaScreenshot}` + '\n')
-				await fs.appendFile('./1backBone/results',  `${match0}` + '\n\n')
+				if (result0.match(loopedName)) {
 
-			}
+					await page.screenshot({ path: `./1backBone/prints/${numeroDaScreenshot}a.png` }, { delay: 4000 })
+					await numeroDaScreenshot++
 
-			if (result1.match(loopedName)) {
+					match0 = await page.evaluate(`document.querySelectorAll('a[class="ss-view-profile"]')[0].href`)
+					await fs.appendFile('./1backBone/results', `possible matches for ${loopedName}` + ' ' + `${numeroDaScreenshot}` + '\n')
+					await fs.appendFile('./1backBone/results', `${match0}` + '\n\n')
 
-				await page.screenshot({ path: `./1backBone/prints/${numeroDaScreenshot}a.png`}, { delay: 4111 })
-				await numeroDaScreenshot++
+				}
 
-				match1 = await page.evaluate(`document.querySelectorAll('a[class="ss-view-profile"]')[1].href`)
-				await fs.appendFile('./1backBone/results', `possible matches for ${loopedName}` + ' ' + `${numeroDaScreenshot}` + '\n')
-				await fs.appendFile('./1backBone/results',  `${match1}` + '\n\n')
+			} catch { 1 + 1 }
 
-			}
+			try {
 
-			if (result2.match(loopedName)) {
+				if (result1.match(loopedName)) {
 
-				await page.screenshot({ path: `./1backBone/prints/${numeroDaScreenshot}a.png`}, { delay: 4111 })
-				await numeroDaScreenshot++
+					await page.screenshot({ path: `./1backBone/prints/${numeroDaScreenshot}a.png` }, { delay: 4111 })
+					await numeroDaScreenshot++
 
-				match2 = await page.evaluate(`document.querySelectorAll('a[class="ss-view-profile"]')[2].href`)
-				await fs.appendFile('./1backBone/results', `possible matches for ${loopedName}` + ' ' + `${numeroDaScreenshot}` + '\n')
-				await fs.appendFile('./1backBone/results',  `${match2}` + '\n\n')
+					match1 = await page.evaluate(`document.querySelectorAll('a[class="ss-view-profile"]')[1].href`)
+					await fs.appendFile('./1backBone/results', `possible matches for ${loopedName}` + ' ' + `${numeroDaScreenshot}` + '\n')
+					await fs.appendFile('./1backBone/results', `${match1}` + '\n\n')
 
-			}
+				}
 
-			if (result3.match(loopedName)) {
+			} catch { 1 + 1 }
 
-				await page.screenshot({ path: `./1backBone/prints/${numeroDaScreenshot}a.png`}, { delay: 4111 })
-				await numeroDaScreenshot++
+			try {
 
-				match3 = await page.evaluate(`document.querySelectorAll('a[class="ss-view-profile"]')[3].href`)
-				await fs.appendFile('./1backBone/results', `possible matches for ${loopedName}` + ' ' + `${numeroDaScreenshot}` + '\n')
-				await fs.appendFile('./1backBone/results',  `${match3}` + '\n\n')
+				if (result2.match(loopedName)) {
 
-			}
+					await page.screenshot({ path: `./1backBone/prints/${numeroDaScreenshot}a.png` }, { delay: 4111 })
+					await numeroDaScreenshot++
 
-			if (result4.match(loopedName)) {
+					match2 = await page.evaluate(`document.querySelectorAll('a[class="ss-view-profile"]')[2].href`)
+					await fs.appendFile('./1backBone/results', `possible matches for ${loopedName}` + ' ' + `${numeroDaScreenshot}` + '\n')
+					await fs.appendFile('./1backBone/results', `${match2}` + '\n\n')
 
-				await page.screenshot({ path: `./1backBone/prints/${numeroDaScreenshot}a.png`}, { delay: 4111 })
-				await numeroDaScreenshot++
+				}
 
-				match4 = await page.evaluate(`document.querySelectorAll('a[class="ss-view-profile"]')[4].href`)
-				await fs.appendFile('./1backBone/results', `possible matches for ${loopedName}` + ' ' + `${numeroDaScreenshot}` + '\n')
-				await fs.appendFile('./1backBone/results',  `${match4}` + '\n\n')
+			} catch { 1 + 1 }
 
-			}
+			try {
 
-			if (result5.match(loopedName)) {
+				if (result3.match(loopedName)) {
 
-				await page.screenshot({ path: `./1backBone/prints/${numeroDaScreenshot}a.png`}, { delay: 4111 })
-				await numeroDaScreenshot++
+					await page.screenshot({ path: `./1backBone/prints/${numeroDaScreenshot}a.png` }, { delay: 4111 })
+					await numeroDaScreenshot++
 
-				match5 = await page.evaluate(`document.querySelectorAll('a[class="ss-view-profile"]')[5].href`)
-				await fs.appendFile('./1backBone/results', `possible matches for ${loopedName}` + ' ' + `${numeroDaScreenshot}` + '\n')
-				await fs.appendFile('./1backBone/results',  `${match5}` + '\n\n')
+					match3 = await page.evaluate(`document.querySelectorAll('a[class="ss-view-profile"]')[3].href`)
+					await fs.appendFile('./1backBone/results', `possible matches for ${loopedName}` + ' ' + `${numeroDaScreenshot}` + '\n')
+					await fs.appendFile('./1backBone/results', `${match3}` + '\n\n')
 
-			}
+				}
 
-			if (result6.match(loopedName)) {
+			} catch { 1 + 1 }
 
-				await page.screenshot({ path: `./1backBone/prints/${numeroDaScreenshot}a.png`}, { delay: 4111 })
-				await numeroDaScreenshot++
+			try {
 
-				match6 = await page.evaluate(`document.querySelectorAll('a[class="ss-view-profile"]')[6].href`)
-				await fs.appendFile('./1backBone/results', `possible matches for ${loopedName}` + ' ' + `${numeroDaScreenshot}` + '\n')
-				await fs.appendFile('./1backBone/results',  `${match6}` + '\n\n')
+				if (result4.match(loopedName)) {
 
-			}
+					await page.screenshot({ path: `./1backBone/prints/${numeroDaScreenshot}a.png` }, { delay: 4111 })
+					await numeroDaScreenshot++
 
-			if (result7.match(loopedName)) {
+					match4 = await page.evaluate(`document.querySelectorAll('a[class="ss-view-profile"]')[4].href`)
+					await fs.appendFile('./1backBone/results', `possible matches for ${loopedName}` + ' ' + `${numeroDaScreenshot}` + '\n')
+					await fs.appendFile('./1backBone/results', `${match4}` + '\n\n')
 
-				await page.screenshot({ path: `./1backBone/prints/${numeroDaScreenshot}a.png`}, { delay: 4111 })
-				await numeroDaScreenshot++
+				}
 
-				match7 = await page.evaluate(`document.querySelectorAll('a[class="ss-view-profile"]')[7].href`)
-				await fs.appendFile('./1backBone/results', `possible matches for ${loopedName}` + ' ' + `${numeroDaScreenshot}` + '\n')
-				await fs.appendFile('./1backBone/results',  `${match7}` + '\n\n')
+			} catch { 1 + 1 }
 
-			}
+			try {
 
-			await page.click('#gsearchTextBox')
-			await page.click('#gsearchTextBox')
-			await page.click('#gsearchTextBox')
+				if (result5.match(loopedName)) {
+
+					await page.screenshot({ path: `./1backBone/prints/${numeroDaScreenshot}a.png` }, { delay: 4111 })
+					await numeroDaScreenshot++
+
+					match5 = await page.evaluate(`document.querySelectorAll('a[class="ss-view-profile"]')[5].href`)
+					await fs.appendFile('./1backBone/results', `possible matches for ${loopedName}` + ' ' + `${numeroDaScreenshot}` + '\n')
+					await fs.appendFile('./1backBone/results', `${match5}` + '\n\n')
+
+				}
+
+			} catch { 1 + 1 }
+
+			try {
+
+				if (result6.match(loopedName)) {
+
+					await page.screenshot({ path: `./1backBone/prints/${numeroDaScreenshot}a.png` }, { delay: 4111 })
+					await numeroDaScreenshot++
+
+					match6 = await page.evaluate(`document.querySelectorAll('a[class="ss-view-profile"]')[6].href`)
+					await fs.appendFile('./1backBone/results', `possible matches for ${loopedName}` + ' ' + `${numeroDaScreenshot}` + '\n')
+					await fs.appendFile('./1backBone/results', `${match6}` + '\n\n')
+
+				}
+
+			} catch { 1 + 1 }
+
+			try {
+
+				if (result7.match(loopedName)) {
+
+					await page.screenshot({ path: `./1backBone/prints/${numeroDaScreenshot}a.png` }, { delay: 4111 })
+					await numeroDaScreenshot++
+
+					match7 = await page.evaluate(`document.querySelectorAll('a[class="ss-view-profile"]')[7].href`)
+					await fs.appendFile('./1backBone/results', `possible matches for ${loopedName}` + ' ' + `${numeroDaScreenshot}` + '\n')
+					await fs.appendFile('./1backBone/results', `${match7}` + '\n\n')
+
+				}
+
+			} catch { 1 + 1 }
+
 			await backspaceALot()
 
 			// await ifHasHistoric()
@@ -186,10 +216,10 @@ async function checkHistoric() {
 
 			async function backspaceALot() {
 
-				for (let backSpaceloopCounter = 0; backSpaceloopCounter < 50; backSpaceloopCounter++) {
-					
+				for (let backSpaceloopCounter = 0; backSpaceloopCounter < 80; backSpaceloopCounter++) {
+
 					await page.keyboard.press('Backspace')
-					
+
 				}
 
 
@@ -199,7 +229,6 @@ async function checkHistoric() {
 
 
 	}
-
 
 	async function loginWithCookies() {
 

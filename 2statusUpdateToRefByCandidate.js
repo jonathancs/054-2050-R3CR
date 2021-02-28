@@ -3,15 +3,13 @@ const puppeteer = require('puppeteer')
 const credentials = require('./configs/credentials.json')
 const cookies = require('./configs/cookies.json')
 const refByCandidateList = require('./configs/2statusUpdateToRefByCandidateConfigs.js')
-let numeroDaScreenshot = 51
+let numeroDaScreenshot = 1
 
 async function checkHistoric() {
 
 	// log current time console.log()
 	let browser = await puppeteer.launch({ headless: false, defaultViewport: null, args: ['--start-maximized'] })
 	let page = await browser.newPage()
-
-
 
 	//// function calls to be done ////
 
@@ -137,7 +135,9 @@ async function checkHistoric() {
 
 			await page.keyboard.press('ArrowDown')
 
-			await page.screenshot({ path: `./prints/${numeroDaScreenshot}.png` }, { delay: 4000 })
+			await waitThreeSeconds()
+
+			await page.screenshot({ path: `./2backBone/prints/${numeroDaScreenshot}.png` })
 
 			numeroDaScreenshot++
 
@@ -159,7 +159,7 @@ async function checkHistoric() {
 			await page.waitForSelector('#change-status-select-ssearch', { timeout: 0 })
 			await page.click('#change-status-select-ssearch')
 
-			await page.type('#change-status-select-ssearch', "f by", { delay: 100 })
+			await page.type('#change-status-select-ssearch', "t r", { delay: 100 })
 			await waitThreeSeconds()
 			await page.keyboard.press('ArrowDown')
 			await page.keyboard.press("Enter")
@@ -167,7 +167,7 @@ async function checkHistoric() {
 			await page.waitForSelector('#status-block-btn > input.updateBtn.primarybtn', { timeout: 0 })
 			await page.click('#status-block-btn > input.updateBtn.primarybtn')
 
-			await page.screenshot({ path: `./prints/${numeroDaScreenshot}.png` }, { delay: 2000 })
+			await page.screenshot({ path: `./2backBone/prints/${numeroDaScreenshot}.png` }, { delay: 2000 })
 
 			numeroDaScreenshot++
 

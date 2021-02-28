@@ -9,33 +9,15 @@ console.log('last prints X')
 
 */
 
-
 const fs = require('fs').promises;
 const puppeteer = require('puppeteer')
-const credentials = require('./configs/credentials.json')
-const cookies = require('./configs/cookies.json')
-const listOfCVsToUpload = require('./configs/3CVsToUpload.js')
+const credentials = require('./generalConfigs/credentials.json')
+const cookies = require('./generalConfigs/cookies.json')
+const scriptConfig = require('./3backBone/3CVsToUpload.js')
 const uploadPage = 'https://recruit.zoho.com/recruit/org4314466/ImportParser.do?module=Candidates&type=importfromdocument'
+// keyboard keys map: https://github.com/puppeteer/puppeteer/blob/main/src/common/USKeyboardLayout.ts
 
 errorCounter = 0
-let numeroDaScreenshot = 1
-let positionNumber = '1034'
-let jobFit = 'QA automation'
-
-/* 
-	back-end dev
-
-	QA
-	QA automation
-
-	front-end dev
-
-	project manager
-	business analyst
-
-	HR Recruiter
-*/
-
 
 async function uploadCVs() {
 
@@ -44,15 +26,13 @@ async function uploadCVs() {
 	let browser = await puppeteer.launch({ headless: false, defaultViewport: null, args: ['--start-maximized'] })
 	let page = await browser.newPage()
 
-	/*========== adjust desired screen size ==========*/
-	/*========== 💻💻💻 ==========*/
-
+	/*====== adjust scree size ======*/
 	await greaterMonitorView()
 	// await mediumMonitorView()
 	// await notebookSizeView()
 
 
-	/*========== function-calls to be done ==========*/
+	/*==== function-calls to be done ====*/
 
 	await standardConfigurations()
 
@@ -62,13 +42,13 @@ async function uploadCVs() {
 
 	await close()
 
-	/*========== End of the calls ==========*/
+	/*==== End of the calls ====*/
 
-	/*========== below is the base script ==========*/
+	/*==== below is the base script ====*/
 
 
 
-	/*========== operative functions ==========*/
+	/*==== operative functions ====*/
 
 	async function login() {
 
@@ -78,7 +58,7 @@ async function uploadCVs() {
 
 		async function loginWithCookies() {
 
-			const cookiesString = await fs.readFile('./configs/cookies.json');
+			const cookiesString = await fs.readFile('./generalConfigs/cookies.json');
 			const cookies = JSON.parse(cookiesString);
 			await page.setCookie(...cookies);
 			await page.goto(uploadPage, { waitUntil: 'networkidle0' })
@@ -95,15 +75,43 @@ async function uploadCVs() {
 
 		}
 
+		async function insertCredentials() {
+
+
+
+			// 1 insert login info
+			await page.type('#login_id', credentials.email, { delay: 30 })
+	
+			// 2 Click next  Button
+			await page.click('#nextbtn')
+	
+			// 3 insert password info
+			await page.type('#password', credentials.password, { delay: 30 })
+	
+			// 4 Click login  Button
+			await page.click('#nextbtn')
+	
+			// 5 Wait For Navigation To Finish
+			await page.waitForNavigation({ waitUntil: 'networkidle2' })
+	
+		}
+	
+		async function storeCookies() {
+	
+			const cookies = await page.cookies()
+			await fs.writeFile('./generalConfigs/cookies.json', JSON.stringify(cookies, null, 2))
+	
+		}
+
 	}
 
 	async function sequentialCVs_upload() {
 
-		for (i = 0; i < listOfCVsToUpload.length; i++) {
-
+		for (i = 0; i < scriptConfig.listOfCVsToUpload.length; i++) {
+			
 			await timerStart()
 
-			loopedCV = listOfCVsToUpload[i]
+			loopedCV = scriptConfig.listOfCVsToUpload[i]
 
 			if (await page.url() != uploadPage) { await page.goto(uploadPage, { waitUntil: 'networkidle0' }).catch(e => void 0) }
 
@@ -138,8 +146,8 @@ async function uploadCVs() {
 
 				await waitOneSecond()
 
-				await page.waitForSelector('#entityLookupdiv > form > div.cvpadding.bB0 > table > tbody > tr > td:nth-child(2) > div > input', positionNumber)
-				await page.type('#entityLookupdiv > form > div.cvpadding.bB0 > table > tbody > tr > td:nth-child(2) > div > input', positionNumber)
+				await page.waitForSelector('#entityLookupdiv > form > div.cvpadding.bB0 > table > tbody > tr > td:nth-child(2) > div > input', scriptConfig.positionNumber)
+				await page.type('#entityLookupdiv > form > div.cvpadding.bB0 > table > tbody > tr > td:nth-child(2) > div > input', scriptConfig.positionNumber)
 
 				await page.keyboard.press("Enter")
 
@@ -203,11 +211,11 @@ async function uploadCVs() {
 					await page.keyboard.press("Tab")
 					await page.keyboard.press("Enter")
 					await waitTwoSeconds()
-					await page.type('select#Crm_Leads_LEADCF6', `${jobFit}`)
+					await page.type('select#Crm_Leads_LEADCF6', `${scriptConfig.jobFit}`)
 					await page.keyboard.press("Tab")
 					await page.keyboard.press("Enter")
 					await waitTwoSeconds()
-					await page.type('select#Crm_Leads_LEADCF7', `${jobFit}`)
+					await page.type('select#Crm_Leads_LEADCF7', `${scriptConfig.jobFit}`)
 					await page.click('#Crm_Leads_LEADCF81')
 					await waitOneSecond()
 					await page.evaluate(`document.querySelector('td[class="sel"]').click()`)
@@ -216,12 +224,20 @@ async function uploadCVs() {
 
 					await waitThreeSeconds()
 
-					await page.click('#Crm_Leads_COUNTRY')
+					//// temporary jobfit1 reassurance in case it fails like before
+					// await page.click('#Crm_Leads_COUNTRY')
+					// await page.keyboard.press("Tab")
+					// await page.keyboard.press("Enter")
+					// await waitTwoSeconds()
+					// await page.type('select#Crm_Leads_LEADCF6', `${scriptConfig.jobFit}`)
 
-					await page.keyboard.press("Tab")
-					await page.keyboard.press("Enter")
+					// candidate owner
+					await page.evaluate(`document.querySelector('[class="selectElementNew1"]').click()`)
+					await waitOneSecond()
+					await page.type('input[type="search"]', `${scriptConfig.candidateOwner}` )
 					await waitTwoSeconds()
-					await page.type('select#Crm_Leads_LEADCF6', `${jobFit}`)
+					await page.keyboard.press('ArrowDown')
+					await page.keyboard.press("Enter")
 
 					try { await page.click('#saveLeadsBtn') } catch (err) { console.log("could'nt press the IMPORT button" + '\n') }
 
@@ -232,21 +248,23 @@ async function uploadCVs() {
 
 						let temporaryScreenshotElement = await page.$('#dv_title')
 
-						await temporaryScreenshotElement.screenshot({ path: `./prints/${numeroDaScreenshot}.png` }, { delay: 2000 })
-						await numeroDaScreenshot++
+						let nomeDoPerfil = await page.evaluate(`document.querySelectorAll('[class="bCardHover"]')[0].innerText`)
+
+						await temporaryScreenshotElement.screenshot({ path: `./3backBone/prints/${scriptConfig.numeroDaScreenshot}${nomeDoPerfil}.png` }, { delay: 2000 })
+						scriptConfig.numeroDaScreenshot++
 
 						currentURL = page.url()
 
-						await fs.appendFile('./results/linksToCheck', (numeroDaScreenshot - 1) + '\n')
-						await fs.appendFile('./results/linksToCheck', currentURL + '\n')
+						await fs.appendFile('./3backBone/results', (scriptConfig.numeroDaScreenshot - 1) + '\n')
+						await fs.appendFile('./3backBone/results', currentURL + '\n\n')
 
 					} catch (err) {
 
 						currentURL = page.url()
 
-						await fs.appendFile('./results/linksToCheck', (numeroDaScreenshot) + '\n')
+						await fs.appendFile('./3backBone/results', 'não funcionou' + (scriptConfig.numeroDaScreenshot) + '\n')
 
-						await numeroDaScreenshot++
+						await scriptConfig.numeroDaScreenshot++
 
 						return
 
@@ -264,16 +282,14 @@ async function uploadCVs() {
 
 						try {
 
-							await console.log(`profile ${numeroDaScreenshot} already exist + '\n'`)
-
 							// screenshot the current infos
-							await page.screenshot({ path: `./prints/${numeroDaScreenshot}alreadyExistInfo1.png` }, { delay: 2000 })
+							await page.screenshot({ path: `./3backBone/prints/${scriptConfig.numeroDaScreenshot}alreadyExistInfo1.png` }, { delay: 2000 })
 
 							// close 'record already exists' POPUP
 							await page.click('span[class="crm-msg-close"]')
 
 							// write the result
-							await fs.appendFile('./results/linksToCheck', `${numeroDaScreenshot}` + ' already exist' + '\n' + loopedCV + '\n')
+							await fs.appendFile('./3backBone/results', '\n' + `${scriptConfig.numeroDaScreenshot}` + ' already exist' + '\n' + loopedCV + '\n')
 
 							firstName = await page.evaluate('document.querySelector("#Crm_Leads_FIRSTNAME").value')
 							lastName = await page.evaluate('document.querySelector("#Crm_Leads_LASTNAME").value')
@@ -292,25 +308,25 @@ async function uploadCVs() {
 
 								// get informations in the profile
 								let profileURL = await page.url()
-								await fs.appendFile('./results/linksToCheck', profileURL + '\n\n')
-								await page.screenshot({ path: `./prints/${numeroDaScreenshot}alreadyExistInfo2.png` }, '#preHTMLContainer_Leads', { delay: 2000 } )
+								await fs.appendFile('./3backBone/results', profileURL + '\n\n')
+								await page.screenshot({ path: `./3backBone/prints/${scriptConfig.numeroDaScreenshot}alreadyExistInfo2.png` }, '#preHTMLContainer_Leads', { delay: 2000 } )
 
 								// timeline
 								await page.click('#newleft_Activities')
 								await waitTwoSeconds()
-								await page.screenshot({ path: `./prints/${numeroDaScreenshot}alreadyExistInfo3.png` }, { delay: 2000 })
+								await page.screenshot({ path: `./3backBone/prints/${scriptConfig.numeroDaScreenshot}alreadyExistInfo3.png` }, { delay: 2000 })
 
 								// notes
 								await page.click('#newleft_Notes')
 								await waitTwoSeconds()
-								await page.screenshot({ path: `./prints/${numeroDaScreenshot}alreadyExistInfo4.png` }, { delay: 2000 })
+								await page.screenshot({ path: `./3backBone/prints/${scriptConfig.numeroDaScreenshot}alreadyExistInfo4.png` }, { delay: 2000 })
 
 								// interviews
 								await page.click('#newleft_67512000002497890') 
 								await waitTwoSeconds()
-								await page.screenshot({ path: `./prints/${numeroDaScreenshot}alreadyExistInfo5.png` }, { delay: 2000 })
+								await page.screenshot({ path: `./3backBone/prints/${scriptConfig.numeroDaScreenshot}alreadyExistInfo5.png` }, { delay: 2000 })
 
-								numeroDaScreenshot++
+								scriptConfig.numeroDaScreenshot++
 
 							}
 
@@ -353,34 +369,6 @@ async function uploadCVs() {
 
 	}
 
-	async function insertCredentials() {
-
-
-
-		// 1 insert login info
-		await page.type('#login_id', credentials.email, { delay: 30 })
-
-		// 2 Click next  Button
-		await page.click('#nextbtn')
-
-		// 3 insert password info
-		await page.type('#password', credentials.password, { delay: 30 })
-
-		// 4 Click login  Button
-		await page.click('#nextbtn')
-
-		// 5 Wait For Navigation To Finish
-		await page.waitForNavigation({ waitUntil: 'networkidle2' })
-
-	}
-
-	async function storeCookies() {
-
-		const cookies = await page.cookies()
-		await fs.writeFile('./configs/cookies.json', JSON.stringify(cookies, null, 2))
-
-	}
-
 	async function waitOneSecond() {
 
 		const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
@@ -402,21 +390,6 @@ async function uploadCVs() {
 		await waitOneSecond()
 		await waitOneSecond()
 		await waitOneSecond()
-	}
-
-	async function dismissPopupTabs() {
-		try { // dismiss the reminders
-
-			await page.evaluate('document.querySelector("span[class=`fR remainderminimize`]").click()')
-			await page.evaluate('document.querySelector("span[class=`wms_minimizeicon wms_menu_minimize`]".click())')
-
-		} catch (err) { 1 + 1 }
-
-		try { // dismiss the chat
-
-			await page.evaluate('document.querySelector("span[class=`wms_minimizeicon wms_menu_minimize`]".click())')
-
-		} catch (err) { 1 + 1 }
 	}
 
 	async function greaterMonitorView() {

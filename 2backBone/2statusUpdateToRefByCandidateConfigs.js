@@ -1,5 +1,3 @@
-let refByCandidateList = [
-
-]
+let refByCandidateList = []
 
 module.exports = refByCandidateList
