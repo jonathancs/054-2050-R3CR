@@ -1,8 +1,8 @@
 const fs = require('fs').promises;
 const puppeteer = require('puppeteer')
-const credentials = require('./configs/credentials.json')
-const cookies = require('./configs/cookies.json')
-const refByCandidateList = require('./configs/2statusUpdateToRefByCandidateConfigs.js')
+const credentials = require('./generalConfigs/credentials.json')
+const cookies = require('./generalConfigs/cookies.json')
+const setup = require('./2backBone/2configs.js')
 let numeroDaScreenshot = 1
 
 async function checkHistoric() {
@@ -17,7 +17,7 @@ async function checkHistoric() {
 
 	await login()
 
-	await updateStatusToRefByCandidate()
+	await updateStatus()
 
 	await browser.close()
 
@@ -25,11 +25,6 @@ async function checkHistoric() {
 	/*  End of the calls  */
 
 	/*  below is the documentation  */
-
-
-
-
-
 
 
 
@@ -44,23 +39,20 @@ async function checkHistoric() {
 		// await page.setViewport({ width: 1270, height: 768, deviceScaleFactor: 1, }); // notebook screen
 	}
 
-
 	async function login() {
 
 		if (Object.keys(cookies).length) { loginWithCookies() } else { loginWithoutCookies() }
 
 	}
 
-
 	async function loginWithCookies() {
 
-		const cookiesString = await fs.readFile('./configs/cookies.json');
+		const cookiesString = await fs.readFile('./generalConfigs/cookies.json');
 		const cookies = JSON.parse(cookiesString);
 		await page.setCookie(...cookies);
 		await page.goto(`https://recruit.zoho.com/recruit/org4314466/ShowTab.do?module=Candidates`, { waitUntil: 'networkidle0', timeout: 0 })
 
 	}
-
 
 	async function loginWithoutCookies() {
 
@@ -71,7 +63,6 @@ async function checkHistoric() {
 		await storeCookies()
 
 	}
-
 
 	async function insertCredentials() {
 
@@ -92,16 +83,14 @@ async function checkHistoric() {
 
 	}
 
-
 	async function storeCookies() {
 
 		await console.log(page.cookies())
 		await console.log(page.cookies)
 		const cookies = await page.cookies();
-		await fs.writeFile('./configs/cookies.json', JSON.stringify(cookies, null, 2));
+		await fs.writeFile('./generalConfigs/cookies.json', JSON.stringify(cookies, null, 2));
 
 	}
-
 
 	async function waitOneSecond() {
 
@@ -121,10 +110,9 @@ async function checkHistoric() {
 		await waitOneSecond()
 	}
 
-
-	async function updateStatusToRefByCandidate() {
-		for (let i = 0; i < refByCandidateList.length; i++) {
-			let loopedName = refByCandidateList[i]
+	async function updateStatus() {
+		for (let i = 0; i < setup.namesListToBeUpdated.length; i++) {
+			let loopedName = setup.namesListToBeUpdated[i]
 
 			await page.waitForSelector("#qIconDiv > table > tbody > tr > td:nth-child(2)")
 			await page.click("#qIconDiv > table > tbody > tr > td:nth-child(2)")
@@ -159,7 +147,7 @@ async function checkHistoric() {
 			await page.waitForSelector('#change-status-select-ssearch', { timeout: 0 })
 			await page.click('#change-status-select-ssearch')
 
-			await page.type('#change-status-select-ssearch', "t r", { delay: 100 })
+			await page.type('#change-status-select-ssearch', setup.statusToBeUpdated, { delay: 100 })
 			await waitThreeSeconds()
 			await page.keyboard.press('ArrowDown')
 			await page.keyboard.press("Enter")

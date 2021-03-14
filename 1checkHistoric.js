@@ -4,7 +4,6 @@ const credentials = require('./generalConfigs/credentials.json')
 const cookies = require('./generalConfigs/cookies.json')
 const candidates = require('./1backBone/namesToBeChecked.js')
 
-
 let numeroDaScreenshot = 1
 
 async function checkHistoric() {
@@ -28,12 +27,6 @@ async function checkHistoric() {
 	/*   End of the calls   */
 
 	/*   below is the base script   */
-
-
-
-
-
-
 
 
 
@@ -83,18 +76,17 @@ async function checkHistoric() {
 
 			} catch (error) { 1 + 1 }
 
-
-
 			try {
+
+				await page.screenshot({ path: `./1backBone/prints/${numeroDaScreenshot}a.png` }, { delay: 4000 })
+				await numeroDaScreenshot++
 
 				if (result0.match(loopedName)) {
 
-					await page.screenshot({ path: `./1backBone/prints/${numeroDaScreenshot}a.png` }, { delay: 4000 })
-					await numeroDaScreenshot++
 
-					match0 = await page.evaluate(`document.querySelectorAll('a[class="ss-view-profile"]')[0].href`)
-					await fs.appendFile('./1backBone/results', `possible matches for ${loopedName}` + ' ' + `${numeroDaScreenshot}` + '\n')
-					await fs.appendFile('./1backBone/results', `${match0}` + '\n\n')
+					getURL0 = await page.evaluate(`document.querySelectorAll('a[class="ss-view-profile"]')[0].href`)
+					await fs.appendFile('./1backBone/results', `\npossible matches for ${loopedName} ` + `${numeroDaScreenshot}` + '\n')
+					await fs.appendFile('./1backBone/results', `${getURL0}` + '\n')
 
 				}
 
@@ -104,12 +96,8 @@ async function checkHistoric() {
 
 				if (result1.match(loopedName)) {
 
-					await page.screenshot({ path: `./1backBone/prints/${numeroDaScreenshot}a.png` }, { delay: 4111 })
-					await numeroDaScreenshot++
-
-					match1 = await page.evaluate(`document.querySelectorAll('a[class="ss-view-profile"]')[1].href`)
-					await fs.appendFile('./1backBone/results', `possible matches for ${loopedName}` + ' ' + `${numeroDaScreenshot}` + '\n')
-					await fs.appendFile('./1backBone/results', `${match1}` + '\n\n')
+					getURL1 = await page.evaluate(`document.querySelectorAll('a[class="ss-view-profile"]')[1].href`)
+					await fs.appendFile('./1backBone/results', `${getURL1}` + '\n')
 
 				}
 
@@ -119,12 +107,8 @@ async function checkHistoric() {
 
 				if (result2.match(loopedName)) {
 
-					await page.screenshot({ path: `./1backBone/prints/${numeroDaScreenshot}a.png` }, { delay: 4111 })
-					await numeroDaScreenshot++
-
-					match2 = await page.evaluate(`document.querySelectorAll('a[class="ss-view-profile"]')[2].href`)
-					await fs.appendFile('./1backBone/results', `possible matches for ${loopedName}` + ' ' + `${numeroDaScreenshot}` + '\n')
-					await fs.appendFile('./1backBone/results', `${match2}` + '\n\n')
+					getURL2 = await page.evaluate(`document.querySelectorAll('a[class="ss-view-profile"]')[2].href`)
+					await fs.appendFile('./1backBone/results', `${getURL2}` + '\n')
 
 				}
 
@@ -134,12 +118,8 @@ async function checkHistoric() {
 
 				if (result3.match(loopedName)) {
 
-					await page.screenshot({ path: `./1backBone/prints/${numeroDaScreenshot}a.png` }, { delay: 4111 })
-					await numeroDaScreenshot++
-
-					match3 = await page.evaluate(`document.querySelectorAll('a[class="ss-view-profile"]')[3].href`)
-					await fs.appendFile('./1backBone/results', `possible matches for ${loopedName}` + ' ' + `${numeroDaScreenshot}` + '\n')
-					await fs.appendFile('./1backBone/results', `${match3}` + '\n\n')
+					getURL3 = await page.evaluate(`document.querySelectorAll('a[class="ss-view-profile"]')[3].href`)
+					await fs.appendFile('./1backBone/results', `${getURL3}` + '\n')
 
 				}
 
@@ -149,12 +129,8 @@ async function checkHistoric() {
 
 				if (result4.match(loopedName)) {
 
-					await page.screenshot({ path: `./1backBone/prints/${numeroDaScreenshot}a.png` }, { delay: 4111 })
-					await numeroDaScreenshot++
-
-					match4 = await page.evaluate(`document.querySelectorAll('a[class="ss-view-profile"]')[4].href`)
-					await fs.appendFile('./1backBone/results', `possible matches for ${loopedName}` + ' ' + `${numeroDaScreenshot}` + '\n')
-					await fs.appendFile('./1backBone/results', `${match4}` + '\n\n')
+					getURL4 = await page.evaluate(`document.querySelectorAll('a[class="ss-view-profile"]')[4].href`)
+					await fs.appendFile('./1backBone/results', `${getURL4}` + '\n')
 
 				}
 
@@ -164,12 +140,8 @@ async function checkHistoric() {
 
 				if (result5.match(loopedName)) {
 
-					await page.screenshot({ path: `./1backBone/prints/${numeroDaScreenshot}a.png` }, { delay: 4111 })
-					await numeroDaScreenshot++
-
-					match5 = await page.evaluate(`document.querySelectorAll('a[class="ss-view-profile"]')[5].href`)
-					await fs.appendFile('./1backBone/results', `possible matches for ${loopedName}` + ' ' + `${numeroDaScreenshot}` + '\n')
-					await fs.appendFile('./1backBone/results', `${match5}` + '\n\n')
+					getURL5 = await page.evaluate(`document.querySelectorAll('a[class="ss-view-profile"]')[5].href`)
+					await fs.appendFile('./1backBone/results', `${getURL5}` + '\n')
 
 				}
 
@@ -179,12 +151,8 @@ async function checkHistoric() {
 
 				if (result6.match(loopedName)) {
 
-					await page.screenshot({ path: `./1backBone/prints/${numeroDaScreenshot}a.png` }, { delay: 4111 })
-					await numeroDaScreenshot++
-
-					match6 = await page.evaluate(`document.querySelectorAll('a[class="ss-view-profile"]')[6].href`)
-					await fs.appendFile('./1backBone/results', `possible matches for ${loopedName}` + ' ' + `${numeroDaScreenshot}` + '\n')
-					await fs.appendFile('./1backBone/results', `${match6}` + '\n\n')
+					getURL6 = await page.evaluate(`document.querySelectorAll('a[class="ss-view-profile"]')[6].href`)
+					await fs.appendFile('./1backBone/results', `${getURL6}` + '\n')
 
 				}
 
@@ -194,12 +162,8 @@ async function checkHistoric() {
 
 				if (result7.match(loopedName)) {
 
-					await page.screenshot({ path: `./1backBone/prints/${numeroDaScreenshot}a.png` }, { delay: 4111 })
-					await numeroDaScreenshot++
-
-					match7 = await page.evaluate(`document.querySelectorAll('a[class="ss-view-profile"]')[7].href`)
-					await fs.appendFile('./1backBone/results', `possible matches for ${loopedName}` + ' ' + `${numeroDaScreenshot}` + '\n')
-					await fs.appendFile('./1backBone/results', `${match7}` + '\n\n')
+					getURL7 = await page.evaluate(`document.querySelectorAll('a[class="ss-view-profile"]')[7].href`)
+					await fs.appendFile('./1backBone/results', `${getURL7}` + '\n')
 
 				}
 
