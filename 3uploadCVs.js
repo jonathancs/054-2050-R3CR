@@ -27,8 +27,8 @@ async function uploadCVs() {
 	let page = await browser.newPage()
 
 	/*====== adjust scree size ======*/
-	await greaterMonitorView()
-	// await mediumMonitorView()
+	// await greaterMonitorView()
+	await mediumMonitorView()
 	// await notebookSizeView()
 
 

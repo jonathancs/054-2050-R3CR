@@ -7,162 +7,203 @@ let numeroDaScreenshot = 1
 
 async function checkHistoric() {
 
-	// log current time console.log()
-	let browser = await puppeteer.launch({ headless: false, defaultViewport: null, args: ['--start-maximized'] })
-	let page = await browser.newPage()
+    /*===== necessary configs to launch the application =====*/
 
-	//// function calls to be done ////
+    let browser = await puppeteer.launch({ headless: false, defaultViewport: null, args: ['--start-maximized'] })
+    let page = await browser.newPage()
 
-	await miscConfigurations()
-
-	await login()
-
-	await updateStatus()
-
-	await browser.close()
+    /*====== adjust scree size ======*/
+    // await greaterMonitorView()
+    await mediumMonitorView()
+    // await notebookSizeView()
 
 
-	/*  End of the calls  */
+    /*==== function-calls to be done ====*/
 
-	/*  below is the documentation  */
+    await standardConfigurations()
+
+    await login()
+
+    await updateStatus()
+
+    await close()
+
+    /*==== End of the calls ====*/
+
+    /*==== below is the base script ====*/
 
 
 
+    /*==== operative functions ====*/
 
-	async function miscConfigurations() {
+    async function login() {
 
-		await page.setDefaultNavigationTimeout(0)
-		const context = browser.defaultBrowserContext()
-		context.overridePermissions("https://recruit.zoho.com/recruit/org4314466/ShowTab.do?module=Candidates", ["geolocation", "notifications"]) // An array of permissions
-		await page.setViewport({ width: 1920, height: 1200, deviceScaleFactor: 1, }) // greater monitor
-		// await page.setViewport({ width: 1270, height: 768, deviceScaleFactor: 1, }); // medium monitor
-		// await page.setViewport({ width: 1270, height: 768, deviceScaleFactor: 1, }); // notebook screen
-	}
+        if (Object.keys(cookies).length) { loginWithCookies() } else { loginWithoutCookies() }
 
-	async function login() {
+        // 🔽 below is the documentation 🔽
 
-		if (Object.keys(cookies).length) { loginWithCookies() } else { loginWithoutCookies() }
+        async function loginWithCookies() {
+            
+            const cookiesString = await fs.readFile('./generalConfigs/cookies.json');
+            const cookies = JSON.parse(cookiesString);
+            await page.setCookie(...cookies);
+            await page.goto('https://recruit.zoho.com/recruit/org4314466/ImportParser.do?module=Candidates&type=importfromdocument', { waitUntil: 'networkidle2' })
 
-	}
+        }
 
-	async function loginWithCookies() {
+        async function loginWithoutCookies() {
 
-		const cookiesString = await fs.readFile('./generalConfigs/cookies.json');
-		const cookies = JSON.parse(cookiesString);
-		await page.setCookie(...cookies);
-		await page.goto(`https://recruit.zoho.com/recruit/org4314466/ShowTab.do?module=Candidates`, { waitUntil: 'networkidle0', timeout: 0 })
+            await page.goto('https://recruit.zoho.com/recruit/org4314466/ImportParser.do?module=Candidates&type=importfromdocument', { waitUntil: 'networkidle0' })
 
-	}
+            await insertCredentials()
 
-	async function loginWithoutCookies() {
+            await storeCookies()
 
-		await page.goto('https://recruit.zoho.com/recruit/org4314466/ShowTab.do?module=Candidates', { waitUntil: 'networkidle0', timeout: 0 })
+        }
 
-		await insertCredentials()
+        async function insertCredentials() {
 
-		await storeCookies()
 
-	}
 
-	async function insertCredentials() {
+            // 1 insert login info
+            await page.type('#login_id', credentials.email, { delay: 30 })
 
-		// 1 insert login info
-		await page.type('#login_id', credentials.email, { delay: 30 })
+            // 2 Click next  Button
+            await page.click('#nextbtn')
 
-		// 2 Click next  Button
-		await page.click('#nextbtn')
+            // 3 insert password info
+            await page.type('#password', credentials.password, { delay: 30 })
 
-		// 3 insert password info
-		await page.type('#password', credentials.password, { delay: 30 })
+            // 4 Click login  Button
+            await page.click('#nextbtn')
 
-		// 4 Click login  Button
-		await page.click('#nextbtn')
+            // 5 Wait For Navigation To Finish
+            await page.waitForNavigation({ waitUntil: 'networkidle2' })
 
-		// 5 Wait For Navigation To Finish
-		await page.waitForNavigation({ waitUntil: 'networkidle0' })
+        }
 
-	}
+        async function storeCookies() {
 
-	async function storeCookies() {
+            const cookies = await page.cookies()
+            await fs.writeFile('./generalConfigs/cookies.json', JSON.stringify(cookies, null, 2))
 
-		await console.log(page.cookies())
-		await console.log(page.cookies)
-		const cookies = await page.cookies();
-		await fs.writeFile('./generalConfigs/cookies.json', JSON.stringify(cookies, null, 2));
+        }
 
-	}
+    }
 
-	async function waitOneSecond() {
+    async function updateStatus() {
 
-		const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
-		const element = async () => {
-			await sleep(1000)
+        for (let i = 0; i < setup.namesListToBeUpdated.length; i++) {
+            let loopedName = setup.namesListToBeUpdated[i]
 
-		}
+            await page.waitForSelector("#qIconDiv > table > tbody > tr > td:nth-child(2)")
+            await page.click("#qIconDiv > table > tbody > tr > td:nth-child(2)")
 
-		await element()
+            await page.type('#gsearchTextBox', loopedName, { delay: 30 })
 
-	}
+            await waitThreeSeconds()
 
-	async function waitThreeSeconds() {
-		await waitOneSecond()
-		await waitOneSecond()
-		await waitOneSecond()
-	}
+            await page.keyboard.press('ArrowDown')
 
-	async function updateStatus() {
-		for (let i = 0; i < setup.namesListToBeUpdated.length; i++) {
-			let loopedName = setup.namesListToBeUpdated[i]
+            await waitThreeSeconds()
 
-			await page.waitForSelector("#qIconDiv > table > tbody > tr > td:nth-child(2)")
-			await page.click("#qIconDiv > table > tbody > tr > td:nth-child(2)")
+            await page.screenshot({ path: `./2backBone/prints/${numeroDaScreenshot}.png` })
 
-			await page.type('#gsearchTextBox', loopedName, { delay: 30 })
+            numeroDaScreenshot++
 
-			await waitThreeSeconds()
+            await waitThreeSeconds()
 
-			await page.keyboard.press('ArrowDown')
+            await page.waitForSelector('#changeStatusQV', { timeout: 0 })
+            await page.click('#changeStatusQV')
 
-			await waitThreeSeconds()
+            await waitThreeSeconds()
 
-			await page.screenshot({ path: `./2backBone/prints/${numeroDaScreenshot}.png` })
+            await page.waitForSelector('#status-block')
+            await page.click('#status-block')
 
-			numeroDaScreenshot++
+            await waitThreeSeconds()
 
-			await waitThreeSeconds()
+            await page.waitForSelector('#change-status-select-sbox', { timeout: 0 })
+            await page.click("#change-status-select-sbox")
 
-			await page.waitForSelector('#changeStatusQV', { timeout: 0 })
-			await page.click('#changeStatusQV')
+            await page.waitForSelector('#change-status-select-ssearch', { timeout: 0 })
+            await page.click('#change-status-select-ssearch')
 
-			await waitThreeSeconds()
+            await page.type('#change-status-select-ssearch', setup.statusToBeUpdated, { delay: 100 })
+            await waitThreeSeconds()
+            await page.keyboard.press('ArrowDown')
+            await page.keyboard.press("Enter")
 
-			await page.waitForSelector('#status-block')
-			await page.click('#status-block')
+            await page.waitForSelector('#status-block-btn > input.updateBtn.primarybtn', { timeout: 0 })
+            await page.click('#status-block-btn > input.updateBtn.primarybtn')
 
-			await waitThreeSeconds()
+            await page.screenshot({ path: `./2backBone/prints/${numeroDaScreenshot}.png` }, { delay: 2000 })
 
-			await page.waitForSelector('#change-status-select-sbox', { timeout: 0 })
-			await page.click("#change-status-select-sbox")
+            numeroDaScreenshot++
 
-			await page.waitForSelector('#change-status-select-ssearch', { timeout: 0 })
-			await page.click('#change-status-select-ssearch')
+            await page.goto('https://recruit.zoho.com/recruit/org4314466/ShowTab.do?module=Candidates', { waitUntil: 'networkidle0' })
 
-			await page.type('#change-status-select-ssearch', setup.statusToBeUpdated, { delay: 100 })
-			await waitThreeSeconds()
-			await page.keyboard.press('ArrowDown')
-			await page.keyboard.press("Enter")
+        }
+    }
 
-			await page.waitForSelector('#status-block-btn > input.updateBtn.primarybtn', { timeout: 0 })
-			await page.click('#status-block-btn > input.updateBtn.primarybtn')
+    
 
-			await page.screenshot({ path: `./2backBone/prints/${numeroDaScreenshot}.png` }, { delay: 2000 })
+    /*========== standard utility functions ==========*/
 
-			numeroDaScreenshot++
+    async function standardConfigurations() {
 
-			await page.goto('https://recruit.zoho.com/recruit/org4314466/ShowTab.do?module=Candidates', { waitUntil: 'networkidle0' })
+        await page.setDefaultNavigationTimeout(0)
+        const context = browser.defaultBrowserContext()
+        context.overridePermissions("https://recruit.zoho.com/recruit/org4314466/ImportParser.do?module=Candidates&type=importfromdocument", ["geolocation", "notifications"]) // An array of permissions
 
-		}
-	}
+    }
+    
+    async function waitOneSecond() {
+
+        const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
+        const element = async () => {
+            await sleep(1000)
+
+        }
+
+        await element()
+
+    }
+
+    async function waitTwoSeconds() {
+        await waitOneSecond()
+        await waitOneSecond()
+    }
+
+    async function waitThreeSeconds() {
+        await waitOneSecond()
+        await waitOneSecond()
+        await waitOneSecond()
+    }
+
+    // opens the browser on a big size window
+    async function greaterMonitorView() {
+        await page.setViewport({ width: 1880, height: 920, deviceScaleFactor: 1, })
+
+    }
+
+    // opens the browser on a medium size window
+    async function mediumMonitorView() {
+        await page.setViewport({ width: 1300, height: 650, deviceScaleFactor: 1, })
+
+    } 
+
+    // opens the browser on a small size window
+    async function notebookSizeView() {
+        await page.setViewport({ width: 1240, height: 650, deviceScaleFactor: 1, })
+
+    }
+
+    async function close() {
+        await browser.close()
+    }
+
+    
 }
 
 checkHistoric()

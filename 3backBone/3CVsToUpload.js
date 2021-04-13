@@ -13,30 +13,7 @@ let candidateOwner = 'Jonathan Casagrande'
 
 let listOfCVsToUpload = [
 
-	'C:/Users/Jonathan Casagrande/Downloads/cvs/toBeUploaded/node (1).pdf',
-	'C:/Users/Jonathan Casagrande/Downloads/cvs/toBeUploaded/node (2).pdf',
-	'C:/Users/Jonathan Casagrande/Downloads/cvs/toBeUploaded/node (3).pdf',
-	'C:/Users/Jonathan Casagrande/Downloads/cvs/toBeUploaded/node (4).pdf',
-	'C:/Users/Jonathan Casagrande/Downloads/cvs/toBeUploaded/node (5).pdf',
-	'C:/Users/Jonathan Casagrande/Downloads/cvs/toBeUploaded/node (6).pdf',
-	'C:/Users/Jonathan Casagrande/Downloads/cvs/toBeUploaded/node (7).pdf',
-	'C:/Users/Jonathan Casagrande/Downloads/cvs/toBeUploaded/node (8).pdf',
-	'C:/Users/Jonathan Casagrande/Downloads/cvs/toBeUploaded/node (9).pdf',
-	'C:/Users/Jonathan Casagrande/Downloads/cvs/toBeUploaded/node (10).pdf',
-	'C:/Users/Jonathan Casagrande/Downloads/cvs/toBeUploaded/node (11).pdf',
-	'C:/Users/Jonathan Casagrande/Downloads/cvs/toBeUploaded/node (12).pdf',
-	'C:/Users/Jonathan Casagrande/Downloads/cvs/toBeUploaded/node (13).pdf',
-	'C:/Users/Jonathan Casagrande/Downloads/cvs/toBeUploaded/node (14).pdf',
-	'C:/Users/Jonathan Casagrande/Downloads/cvs/toBeUploaded/node (15).pdf',
-	'C:/Users/Jonathan Casagrande/Downloads/cvs/toBeUploaded/node (16).pdf',
-	'C:/Users/Jonathan Casagrande/Downloads/cvs/toBeUploaded/node (17).pdf',
-	'C:/Users/Jonathan Casagrande/Downloads/cvs/toBeUploaded/node (18).pdf',
-	'C:/Users/Jonathan Casagrande/Downloads/cvs/toBeUploaded/node (19).pdf',
-	'C:/Users/Jonathan Casagrande/Downloads/cvs/toBeUploaded/node (20).pdf',
-	'C:/Users/Jonathan Casagrande/Downloads/cvs/toBeUploaded/node (21).pdf',
-	'C:/Users/Jonathan Casagrande/Downloads/cvs/toBeUploaded/node (22).pdf',
-	'C:/Users/Jonathan Casagrande/Downloads/cvs/toBeUploaded/node (23).pdf'
-	
+	'D:/Usuarios/Jonnyboy/Downloads/jonathanresume.pdf'
 
 ]
 
